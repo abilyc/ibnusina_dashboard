@@ -182,7 +182,8 @@ export default function BlogPostCard({ post, index}) {
             }}
           />
 
-          <CoverImgStyle alt={title} src={cover} />
+          {/* <CoverImgStyle alt={title} src={cover} /> */}
+          <CoverImgStyle alt={title} src={'https://ucarecdn.com/aec5aa94-6669-4e36-b411-3672ff33fd7b/-/format/jpeg/-/quality/smart/amaliahtadris1024x576.png'} />          
         </CardMediaStyle>
 
         <CardContent
