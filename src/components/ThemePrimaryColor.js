@@ -17,18 +17,19 @@ ThemePrimaryColor.propTypes = {
 export default function ThemePrimaryColor({ children }) {
   const defaultTheme = useTheme();
   // const { setColor } = useSettings();
-  const setColor = {
-    name: 'orange',
-    lighter: '#FEF4D4',
-    light: '#FED680',
-    main: '#fda92d',
-    dark: '#B66816',
-    darker: '#793908',
-    contrastText: palette.light.grey[800]
-  }
-
+  
   const themeOptions = useMemo(
-    () => ({
+    () => {
+      const setColor = {
+        name: 'orange',
+        lighter: '#FEF4D4',
+        light: '#FED680',
+        main: '#fda92d',
+        dark: '#B66816',
+        darker: '#793908',
+        contrastText: palette.light.grey[800]
+      }
+      return{
       ...defaultTheme,
       palette: {
         ...defaultTheme.palette,
@@ -39,8 +40,8 @@ export default function ThemePrimaryColor({ children }) {
         ...defaultTheme.customShadows,
         primary: `0 8px 16px 0 ${alpha(setColor.main, 0.24)}`
       }
-    }),
-    [setColor, defaultTheme]
+    }},
+    [defaultTheme]
   );
 
   const theme = createTheme(themeOptions);

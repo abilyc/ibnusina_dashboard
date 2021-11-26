@@ -56,16 +56,16 @@ export default function AccountPopover() {
   };
 
   const handleLogout = async () => {
-    // try {
-    //   await logout();
-    //   navigate('/');
-    //   if (isMountedRef.current) {
-    //     handleClose();
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    //   enqueueSnackbar('Unable to logout', { variant: 'error' });
-    // }
+    try {
+      // await logout();
+      navigate('/');
+      if (isMountedRef.current) {
+        handleClose();
+      }
+    } catch (error) {
+      console.error(error);
+      enqueueSnackbar('Unable to logout', { variant: 'error' });
+    }
   };
 
   return (
@@ -129,7 +129,7 @@ export default function AccountPopover() {
 
         <Box sx={{ p: 2, pt: 1.5 }}>
           {/* <Button fullWidth color="inherit" variant="outlined" onClick={handleLogout}> */}
-          <Button fullWidth color="inherit" variant="outlined">
+          <Button fullWidth color="inherit" variant="outlined" onClick={handleLogout}>
             Logout
           </Button>
         </Box>

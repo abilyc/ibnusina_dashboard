@@ -27,7 +27,7 @@ const RootStyle = styled('span')(({ theme, ownerState }) => {
     ...(status === 'offline' && { backgroundColor: 'transparent' }),
 
     ...(status === 'away' && {
-      backgroundColor: theme.palette.warning.main,
+      backgroundColor: palette.warning.main,
       '&:before': {
         width: 2,
         height: 4,

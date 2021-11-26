@@ -1,10 +1,14 @@
 import PropTypes from 'prop-types';
+import { useRef } from 'react';
 import { Icon } from '@iconify/react';
 import { paramCase } from 'change-case';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import { Link as RouterLink } from 'react-router-dom';
+import deleteFilled from '@iconify/icons-ant-design/delete-filled';
+import editFilled from '@iconify/icons-ant-design/edit-filled';
 import shareFill from '@iconify/icons-eva/share-fill';
 import messageCircleFill from '@iconify/icons-eva/message-circle-fill';
+
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Card, Grid, Avatar, Typography, CardContent } from '@mui/material';
@@ -15,6 +19,7 @@ import { fDate } from '../../../utils/formatTime';
 import { fShortenNumber } from '../../../utils/formatNumber';
 //
 import SvgIconStyle from '../../SvgIconStyle';
+import { MIconButton } from '../../@material-extend';
 
 // ----------------------------------------------------------------------
 
@@ -22,6 +27,41 @@ const CardMediaStyle = styled('div')({
   position: 'relative',
   paddingTop: 'calc(100% * 3 / 4)'
 });
+
+// const ActionIcon = styled('span')({
+//   width: 100,
+//   height: 30,
+//   position: 'absolute',
+//   borderBottomLeftRadius: 20,
+//   padding:5,
+//   paddingLeft: 13,
+//   top: 0,
+//   right: 0,
+//   display: 'block',
+//   backgroundColor: 'red',
+//   color: 'white',
+// });
+
+const ActionIcon = styled(Grid)(({ theme }) => ({
+  zIndex: 10,
+  // width: 100,
+  height: 30,
+  position: 'absolute',
+  borderBottomLeftRadius: 20,
+  padding:theme.spacing(0.7,0.7,4),
+  top: 0,
+  right: 0,
+  display: 'block',
+  backgroundColor: theme.palette.primary.main,
+  '& svg': {
+    color: theme.palette.grey[800],
+    zIndex:11,
+    margin: theme.spacing(0,0.5)
+  },
+  '& .MuiIconButton-sizeSmall:hover>svg': {
+    color: theme.palette.grey[600]
+  }
+}));
 
 const TitleStyle = styled(RouterLink)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -69,11 +109,12 @@ BlogPostCard.propTypes = {
   index: PropTypes.number
 };
 
-export default function BlogPostCard({ post, index }) {
+export default function BlogPostCard({ post, index}) {
   const { cover, title, view, comment, share, author, createdAt } = post;
   const linkTo = `${PATH_PAGE.blog}/${paramCase(title)}`;
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
+  const actRef = useRef(null);
 
   const POST_INFO = [
     { number: comment, icon: messageCircleFill },
@@ -105,6 +146,16 @@ export default function BlogPostCard({ post, index }) {
             })
           }}
         >
+          <Grid container>
+            <ActionIcon item>
+              <MIconButton ref={actRef} size='small'>
+                <Icon icon={deleteFilled} fontSize='small'/>
+              </MIconButton>
+              <MIconButton ref={actRef} size='small'>
+                <Icon icon={editFilled} fontSize='small'/>
+              </MIconButton>
+            </ActionIcon>
+          </Grid>
           <SvgIconStyle
             color="paper"
             src="/static/icons/shape-avatar.svg"

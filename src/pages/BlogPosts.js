@@ -28,10 +28,10 @@ const SORT_OPTIONS = [
 
 const posts = [
   { 
-    cover: '', title: 'asd', view: 5, comment: 'asdasd', share: 2, author: 'Admin', createdAt: '12-12-2012' 
+    id: 'asd', cover: '', title: 'asd', view: 5, comment: 'asdasd', share: 2, author: 'Admin', createdAt: '12-12-2012' 
   },
   {
-    cover: '', title: 'asd', view: 5, comment: 'asdasd', share: 2, author: 'Admin', createdAt: '12-12-2012' 
+    id: 'asdww', cover: '', title: 'asd', view: 5, comment: 'asdasd', share: 2, author: 'Admin', createdAt: '12-12-2012' 
   },
 ]
 

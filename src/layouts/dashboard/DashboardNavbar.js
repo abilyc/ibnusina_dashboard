@@ -11,7 +11,7 @@ import { MHidden } from '../../components/@material-extend';
 import Searchbar from './Searchbar';
 import AccountPopover from './AccountPopover';
 // import LanguagePopover from './LanguagePopover';
-import ContactsPopover from './ContactsPopover';
+// import ContactsPopover from './ContactsPopover';
 import NotificationsPopover from './NotificationsPopover';
 
 // ----------------------------------------------------------------------
@@ -70,7 +70,7 @@ export default function DashboardNavbar({ onOpenSidebar }) {
         <Stack direction="row" alignItems="center" spacing={{ xs: 0.5, sm: 1.5 }}>
           {/* <LanguagePopover /> */}
           <NotificationsPopover />
-          <ContactsPopover />
+          {/* <ContactsPopover /> */}
           <AccountPopover />
         </Stack>
       </ToolbarStyle>
