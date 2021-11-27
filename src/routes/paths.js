@@ -10,7 +10,8 @@ function path(root, sublink) {
 export const PATH_PAGE = {
   root: '/',
   app: '/app',
-  blog: '/blog'
+  blog: '/blog',
+  ct: '/ct'
 };
 
 

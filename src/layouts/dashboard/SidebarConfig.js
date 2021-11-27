@@ -46,6 +46,11 @@ const sidebarConfig = [
         title: 'blog',
         path: PATH_PAGE.blog,
         icon: ''
+      },
+      {
+        title: 'category & tag',
+        path: PATH_PAGE.ct,
+        icon: ''
       }
     ]
   }

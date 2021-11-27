@@ -33,7 +33,8 @@ export default function Router() {
       children: [
         { path: '/', element: <Navigate to="app" replace /> },
         { path: 'app', element: <GeneralApp /> },
-        { path: 'blog', element: <BlogPosts />}
+        { path: 'blog', element: <BlogPosts />},
+        { path: 'ct', element: <p>category n tag</p>}
       ]
     },
   ])

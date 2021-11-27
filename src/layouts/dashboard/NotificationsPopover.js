@@ -50,7 +50,7 @@ const DESCRIPTIONS = [
 
 const TYPES = ['order_placed', 'friend_interactive', 'chat_message', 'mail', 'order_shipped'];
 
-const AVATARS = [null, '', null, null, null];
+const AVATARS = [null, null, null, null, null];
 
 const UNREADS = [true, true, false, false, false];
 
