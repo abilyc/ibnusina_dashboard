@@ -42,29 +42,29 @@ const MENU_OPTIONS = [
 
 export default function AccountPopover() {
   const anchorRef = useRef(null);
-  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
   const { signOut } = useAuth();
   const [open, setOpen] = useState(false);
-
+  const navigate = useNavigate();
+  
   const handleOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
   };
-
+  
   const handleLogout = async () => {
     try {
       await signOut();
-      navigate('/');
       if (isMountedRef.current) {
         handleClose();
       }
+      navigate('/');
     } catch (error) {
-      console.error(error);
-      enqueueSnackbar('Unable to logout', { variant: 'error' });
+      // console.error(error);
+      // enqueueSnackbar('Unable to logout', { variant: 'error' });
     }
   };
 
