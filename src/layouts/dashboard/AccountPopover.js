@@ -9,9 +9,9 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { alpha } from '@mui/material/styles';
 import { Button, Box, Divider, MenuItem, Typography } from '@mui/material';
 // routes
-import { PATH_PAGE } from '../../routes/paths';
+// import { PATH_PAGE } from '../../routes/paths';
 // hooks
-// import useAuth from '../../hooks/useAuth';
+import {useAuth} from '../../contexts/useAuth';
 import useIsMountedRef from '../../hooks/useIsMountedRef';
 // components
 import { MIconButton } from '../../components/@material-extend';
@@ -45,7 +45,7 @@ export default function AccountPopover() {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const isMountedRef = useIsMountedRef();
-  // const { user, logout } = useAuth();
+  const { signOut } = useAuth();
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -57,7 +57,7 @@ export default function AccountPopover() {
 
   const handleLogout = async () => {
     try {
-      // await logout();
+      await signOut();
       navigate('/');
       if (isMountedRef.current) {
         handleClose();

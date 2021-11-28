@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Grid, Box } from '@mui/material';
 import { MenuItem } from '@mui/material';
@@ -7,13 +8,10 @@ import { Icon } from '@iconify/react';
 import { MIconButton } from '../../components/@material-extend';
 import deleteFilled from '@iconify/icons-ant-design/delete-filled';
 import editFilled from '@iconify/icons-ant-design/edit-filled';
-import homeFill from '@iconify/icons-eva/home-fill';
-import personFill from '@iconify/icons-eva/person-fill';
-import settings2Fill from '@iconify/icons-eva/settings-2-fill';
+import editTwotone from '@iconify/icons-ant-design/edit-twotone';
 
 const ActionIcon = styled(Grid)(({ theme }) => ({
     zIndex: 10,
-    // width: 100,
     height: 30,
     position: 'absolute',
     borderBottomLeftRadius: 20,
@@ -38,24 +36,24 @@ const ActionIcon = styled(Grid)(({ theme }) => ({
 
 const MENU_OPTIONS = [
     {
-      label: 'Edit title',
-      icon: homeFill,
-      linkTo: '/#'
+        label: 'Edit Title',
+        icon: editTwotone,
+        linkTo: '#'
     },
     {
-      label: 'Edit description',
-      icon: personFill,
-      linkTo: '/#'
+        label: 'Edit Description',
+        icon: editTwotone,
+        linkTo: '#'
     },
     {
-      label: 'Edit Content',
-      icon: settings2Fill,
-      linkTo: '/#'
+        label: 'Edit Content',
+        icon: editTwotone,
+        linkTo: '#'
     },
     {
         label: 'Full Edit',
-        icon: settings2Fill,
-        linkTo: '/#'
+        icon: editFilled,
+        linkTo: '#'
       }
   ];
 
@@ -86,27 +84,27 @@ export default function ActionPopover(){
         </Grid>
 
         <MenuPopover open={open} onClose={handleClose} anchorEl={editRef.current} sx={{widh: 220}}>
-        {MENU_OPTIONS.map((option) => (
-            <MenuItem
-                key={option.label}
-                // to={option.linkTo}
-                // component={RouterLink}
-                onClick={handleClose}
-                sx={{ typography: 'body2', py: 1, px: 2.5 }}
-            >
-                <Box
-                component={Icon}
-                icon={option.icon}
-                sx={{
-                    mr: 2,
-                    width: 24,
-                    height: 24
-                }}
-                />
+            {MENU_OPTIONS.map((option) => (
+                <MenuItem
+                    key={option.label}
+                    to={option.linkTo}
+                    component={RouterLink}
+                    onClick={handleClose}
+                    sx={{ typography: 'body2', py: 1, px: 2.5 }}
+                >
+                    <Box
+                    component={Icon}
+                    icon={option.icon}
+                    sx={{
+                        mr: 2,
+                        width: 24,
+                        height: 24
+                    }}
+                    />
 
-                {option.label}
-            </MenuItem>
-        ))}
+                    {option.label}
+                </MenuItem>
+            ))}
         </MenuPopover>
     
     </>

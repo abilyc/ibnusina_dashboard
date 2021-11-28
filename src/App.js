@@ -4,13 +4,14 @@ import Router from './routes';
 import ThemeConfig from './theme';
 import GlobalStyles from './theme/globalStyles';
 // hooks
-// import useAuth from './hooks/useAuth';
+import { useAuth } from './contexts/useAuth';
 // components
 import RtlLayout from './components/RtlLayout';
-import ScrollToTop from './components/ScrollToTop';
+// import ScrollToTop from './components/ScrollToTop';
 import NotistackProvider from './components/NotistackProvider';
 import ThemePrimaryColor from './components/ThemePrimaryColor';
 import LoadingScreen, { ProgressBarStyle } from './components/LoadingScreen';
+import { AuthProvider } from './contexts/useAuth';
 
 // ----------------------------------------------------------------------
 
@@ -24,9 +25,11 @@ export default function App() {
             <NotistackProvider>
               <GlobalStyles />
               <ProgressBarStyle />
-              <ScrollToTop />
+              {/* <ScrollToTop /> */}
               {/* {isInitialized ? <Router /> : <LoadingScreen />} */}
-              <Router /> 
+              <AuthProvider>
+                <Router />
+              </AuthProvider>
             </NotistackProvider>
           </RtlLayout>
       </ThemePrimaryColor>
