@@ -5,7 +5,7 @@
 // import './locales/i18n';
 
 // highlight
-// import './utils/highlight';
+import './utils/highlight';
 
 // scroll bar
 import 'simplebar/src/simplebar.css';

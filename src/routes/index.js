@@ -8,6 +8,7 @@ import Login from '../pages/authentication/Login';
 // import RoleBasedGuard from '../guards/RoleBasedGuard';
 // components
 import LoadingScreen from '../components/LoadingScreen';
+// import { BlogNewPostForm } from '../components/_dashboard/blog';
 
 // ----------------------------------------------------------------------
 
@@ -38,7 +39,8 @@ export default function Router() {
         { path: '/', element: <Navigate to="app" replace /> },
         { path: 'app', element: <GeneralApp /> },
         { path: 'blog', element: <BlogPosts />},
-        { path: 'ct', element: <p>category n tag</p>}
+        { path: 'ct', element: <p>category n tag</p>},
+        { path: 'blog/newpost', element: <BlogNewPost />}
       ]
     },
     {
@@ -57,4 +59,4 @@ export default function Router() {
 const GeneralApp = Loadable(lazy(() => import('../pages/GeneralApp')));
 const BlogPosts = Loadable(lazy(() => import('../pages/BlogPosts')));
 // const BlogPost = Loadable(lazy(() => import('../pages/dashboard/BlogPost')));
-// const BlogNewPost = Loadable(lazy(() => import('../pages/dashboard/BlogNewPost')));
+const BlogNewPost = Loadable(lazy(() => import('../pages/BlogNewPost')));

@@ -6,7 +6,6 @@ export const getPosts = gql`query {
       id
       cover: imageUrl
       title
-      slug
       author{
         authorName: callName
         avatar

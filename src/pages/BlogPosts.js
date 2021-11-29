@@ -1,7 +1,7 @@
 import { orderBy } from 'lodash';
 import { Icon } from '@iconify/react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-// import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 // import { useEffect, useCallback, useState } from 'react';
 import { useEffect, useState } from 'react';
@@ -15,7 +15,7 @@ import { Box, Grid, Button, Skeleton, Container, Stack } from '@mui/material';
 // hooks
 // import useSettings from '../../hooks/useSettings';
 // routes
-import { PATH_PAGE } from '../routes/paths';
+import { PATH_BLOG, PATH_PAGE } from '../routes/paths';
 // components
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
@@ -94,13 +94,13 @@ export default function BlogPosts() {
           heading="Blog"
           links={[
             { name: 'Dashboard', href: PATH_PAGE.root },
-            { name: 'Blog', href: PATH_PAGE.blog}
+            { name: 'Blog', href: PATH_BLOG.root}
           ]}
           action={
             <Button
               variant="contained"
-              // component={RouterLink}
-              // to={PATH_DASHBOARD.blog.newPost}
+              component={RouterLink}
+              to={PATH_BLOG.newpost}
               startIcon={<Icon icon={plusFill} />}
             >
               New Post
