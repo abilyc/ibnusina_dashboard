@@ -20,6 +20,7 @@ import { PATH_PAGE } from '../routes/paths';
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 import { BlogPostCard, BlogPostsSort } from '../components/_dashboard/blog';
+import LoadingScreen from '../components/LoadingScreen';
 
 // ----------------------------------------------------------------------
 
@@ -64,8 +65,8 @@ export default function BlogPosts() {
   // const dispatch = useDispatch();
   
   const [filters, setFilters] = useState('terbaru');
-  const [posts, setPosts] = useState([{id: 'asd', cover: '', title: 'asd', meta: {view: 5, comment: 'asdasd', share: 2}, author:{authorName: 'Admin', avatar:''}, createdAt: '1638162058'}]);
-  const { data } = useQuery(getPosts, {fetchPolicy: 'network-only'});
+  const [posts, setPosts] = useState([{id: 'asd', cover: 'static/mock-images/covers/cover_2.jpg', title: 'asd', meta: {view: 5, comment: 'asdasd', share: 2}, author:{authorName: 'Admin', avatar:''}, createdAt: '1638162058'}]);
+  const { data, loading } = useQuery(getPosts, {fetchPolicy: 'cache-first'});
   
   useEffect(()=>{
     if(data){ 
@@ -120,9 +121,13 @@ export default function BlogPosts() {
           style={{ overflow: 'inherit' }}
         >
           <Grid container spacing={3}>
-            {sortedPosts.map((post, index) => (
-              <BlogPostCard key={post.id} post={post} index={index} />
-            ))}
+            {
+              loading ? <LoadingScreen item /> :
+              sortedPosts.map((post, index) => (
+                <BlogPostCard key={post.id} post={post} index={index} />
+              ))
+            
+            }
           </Grid>
         </InfiniteScroll>
       </Container>

@@ -45,12 +45,12 @@ const sidebarConfig = [
       {
         title: 'blog',
         path: PATH_PAGE.blog,
-        icon: ''
+        icon: ICONS.blog
       },
       {
         title: 'category & tag',
         path: PATH_PAGE.ct,
-        icon: ''
+        icon: ICONS.banking
       }
     ]
   }
