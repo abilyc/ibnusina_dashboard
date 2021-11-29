@@ -1,5 +1,5 @@
 // hooks
-// import useAuth from '../hooks/useAuth';
+import { useAuth } from '../contexts/useAuth';
 //
 import { MAvatar } from './@material-extend';
 // import createAvatar from '../utils/createAvatar';
@@ -7,12 +7,12 @@ import { MAvatar } from './@material-extend';
 // ----------------------------------------------------------------------
 
 export default function MyAvatar({ ...other }) {
-  // const { user } = useAuth();
+  const { myData } = useAuth();
 
   return (
     <MAvatar
-      src=''
-      alt=''
+      src={ myData.avatar }
+      alt={ myData.avatar }
       // color={user.photoURL ? 'default' : createAvatar(user.displayName).color}
       {...other}
     >

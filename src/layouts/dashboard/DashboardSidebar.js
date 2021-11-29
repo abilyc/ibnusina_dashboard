@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useEffect } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
+import {useAuth} from '../../contexts/useAuth';
 // material
 import { alpha, styled } from '@mui/material/styles';
 import { Box, Link, Stack, Button, Drawer, Tooltip, Typography, CardActionArea } from '@mui/material';
@@ -93,7 +94,8 @@ DashboardSidebar.propTypes = {
 
 export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
-  // const { user } = useAuth();
+  const { myData } = useAuth();
+  console.log(myData);
 
   const { isCollapse, collapseClick, collapseHover, onToggleCollapse, onHoverEnter, onHoverLeave } =
     useCollapseDrawer();
@@ -131,7 +133,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         }}
       >
         <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Box component={RouterLink} to="/" sx={{ display: 'inline-flex' }}>
+          <Box sx={{ display: 'inline-flex' }}>
             <Logo />
           </Box>
 
@@ -148,10 +150,10 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
               <MyAvatar />
               <Box sx={{ ml: 2 }}>
                 <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                  Admin
+                  { myData.callName }
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  admin
+                  { myData.role }
                 </Typography>
               </Box>
             </AccountStyle>
@@ -169,7 +171,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
 
           <div>
             <Typography gutterBottom variant="subtitle1">
-              Hi, Admin
+              Hi, { myData.callName }
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Need help?
