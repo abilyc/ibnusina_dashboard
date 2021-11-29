@@ -1,21 +1,28 @@
-// import { onError } from 'apollo-link-error'
-// import { ApolloLink } from 'apollo-link'
-import { useContext, createContext } from 'react'
+import { onError } from 'apollo-link-error'
+import { ApolloLink } from 'apollo-link'
 import {
   ApolloProvider,
   ApolloClient,
   InMemoryCache,
-  gql
+  gql,
+  HttpLink
 } from '@apollo/client'
+import { useContext, createContext } from 'react'
+// import {
+//   ApolloProvider,
+//   ApolloClient,
+//   InMemoryCache,
+//   gql
+// } from '@apollo/client'
 import { Navigate } from 'react-router';
 // import { LOGIN } from '../query/login';
 import useLocalStorage from '../hooks/useLocalStorage';
 
 // Debug error
-// const errorLink = onError(({graphQLErrors, networkError})=>{
-//   if(graphQLErrors) console.log('graphQLerror', graphQLErrors)
-//   if(networkError) console.log('networkError', networkError)
-// })
+const errorLink = onError(({graphQLErrors, networkError})=>{
+  if(graphQLErrors) console.log('graphQLerror', graphQLErrors)
+  if(networkError) console.log('networkError', networkError)
+})
 
 const authContext = createContext()
 
@@ -51,26 +58,26 @@ function useProvideAuth() {
 
   const createApolloClient = () => {
 
-  // const httpLink = new HttpLink({
-  //     uri: `https://tctshv3433.execute-api.us-east-1.amazonaws.com/test/graphql`,
-  //     // uri: `https://3t2zg4dxxl.execute-api.us-east-1.amazonaws.com/dev/graphql`,
-  //     headers: getAuthHeaders(),
-  //   })
-
-  //   const link = ApolloLink.from([errorLink, httpLink]);
-
-  //   return new ApolloClient({
-  //     link,
-  //     cache: new InMemoryCache(),
-  //   })
-  // }
-
-    return new ApolloClient({
+  const httpLink = new HttpLink({
       uri: `https://tctshv3433.execute-api.us-east-1.amazonaws.com/test/graphql`,
-      cache: new InMemoryCache(),
+      // uri: `https://3t2zg4dxxl.execute-api.us-east-1.amazonaws.com/dev/graphql`,
       headers: getAuthHeaders(),
     })
+
+    const link = ApolloLink.from([errorLink, httpLink]);
+
+    return new ApolloClient({
+      link,
+      cache: new InMemoryCache(),
+    })
   }
+
+  //   return new ApolloClient({
+  //     uri: `https://tctshv3433.execute-api.us-east-1.amazonaws.com/test/graphql`,
+  //     cache: new InMemoryCache(),
+  //     headers: getAuthHeaders(),
+  //   })
+  // }
 
   const signIn = async ({ username, password }) => {
     

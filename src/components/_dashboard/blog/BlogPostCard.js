@@ -97,16 +97,16 @@ BlogPostCard.propTypes = {
 };
 
 export default function BlogPostCard({ post, index}) {
-  const { cover, title, view, comment, share, author, createdAt } = post;
+  const { cover, title, meta, author, createdAt } = post;
   const linkTo = `${PATH_PAGE.blog}/${paramCase(title)}`;
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
   // const actRef = useRef(null);
 
   const POST_INFO = [
-    { number: comment, icon: messageCircleFill },
-    { number: view, icon: eyeFill },
-    { number: share, icon: shareFill }
+    { number: meta.comment, icon: messageCircleFill },
+    { number: meta.view, icon: eyeFill },
+    { number: meta.share, icon: shareFill }
   ];
 
   return (
@@ -134,16 +134,6 @@ export default function BlogPostCard({ post, index}) {
           }}
         >
           <ActionPopover/>
-          {/* <Grid container>
-            <ActionIcon item>
-              <MIconButton ref={actRef} size='small'>
-                <Icon icon={deleteFilled} fontSize='small'/>
-              </MIconButton>
-              <MIconButton ref={actRef} size='small'>
-                <Icon icon={editFilled} fontSize='small'/>
-              </MIconButton>
-            </ActionIcon>
-          </Grid> */}
           <SvgIconStyle
             color="paper"
             src="/static/icons/shape-avatar.svg"
@@ -157,8 +147,8 @@ export default function BlogPostCard({ post, index}) {
             }}
           />
           <AvatarStyle
-            alt={author.name}
-            src={author.avatarUrl}
+            alt={author.authorName}
+            src={author.avatar}
             sx={{
               ...((latestPostLarge || latestPost) && {
                 zIndex: 9,
@@ -171,7 +161,7 @@ export default function BlogPostCard({ post, index}) {
           />
 
           {/* <CoverImgStyle alt={title} src={cover} /> */}
-          <CoverImgStyle alt={title} src={'https://ucarecdn.com/aec5aa94-6669-4e36-b411-3672ff33fd7b/-/format/jpeg/-/quality/smart/amaliahtadris1024x576.png'} />          
+          <CoverImgStyle alt={title} src={cover} />          
         </CardMediaStyle>
 
         <CardContent

@@ -1,9 +1,12 @@
 import { orderBy } from 'lodash';
 import { Icon } from '@iconify/react';
 import plusFill from '@iconify/icons-eva/plus-fill';
-import { Link as RouterLink } from 'react-router-dom';
+// import { Link as RouterLink } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useEffect, useCallback, useState } from 'react';
+// import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
+import { getPosts } from '../db/queries';
 // material
 import { Box, Grid, Button, Skeleton, Container, Stack } from '@mui/material';
 // redux
@@ -26,14 +29,6 @@ const SORT_OPTIONS = [
   { value: 'terlama', label: 'terlama' }
 ];
 
-const posts = [
-  { 
-    id: 'asd', cover: '', title: 'asd', view: 5, comment: 'asdasd', share: 2, author: 'Admin', createdAt: '12-12-2012' 
-  },
-  {
-    id: 'asdww', cover: '', title: 'asd', view: 5, comment: 'asdasd', share: 2, author: 'Admin', createdAt: '12-12-2012' 
-  },
-]
 
 // ----------------------------------------------------------------------
 
@@ -67,7 +62,17 @@ const SkeletonLoad = (
 export default function BlogPosts() {
   const  themeStretch  = false;
   // const dispatch = useDispatch();
+  
   const [filters, setFilters] = useState('terbaru');
+  const [posts, setPosts] = useState([{id: 'asd', cover: '', title: 'asd', meta: {view: 5, comment: 'asdasd', share: 2}, author:{authorName: 'Admin', avatar:''}, createdAt: '1638162058'}]);
+  const { data } = useQuery(getPosts, {fetchPolicy: 'network-only'});
+  
+  useEffect(()=>{
+    if(data){ 
+      setPosts(data?.loadPosts?.postResult);
+    }
+  },[data]);
+
   // const { posts, hasMore, index, step } = useSelector((state) => state.blog);
   const sortedPosts = applySort(posts, filters);
   // const onScroll = useCallback(() => dispatch(getMorePosts()), [dispatch]);
@@ -75,6 +80,7 @@ export default function BlogPosts() {
   // useEffect(() => {
   //   dispatch(getPostsInitial(index, step));
   // }, [dispatch, index, step]);
+
 
   const handleChangeSort = (event) => {
     setFilters(event.target.value);
