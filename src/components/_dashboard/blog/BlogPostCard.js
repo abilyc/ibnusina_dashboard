@@ -104,9 +104,9 @@ export default function BlogPostCard({ post, index}) {
   // const actRef = useRef(null);
 
   const POST_INFO = [
-    { number: meta.comment, icon: messageCircleFill },
-    { number: meta.view, icon: eyeFill },
-    { number: meta.share, icon: shareFill }
+    { number: meta?.comment ?? 0, icon: messageCircleFill },
+    { number: meta?.view ?? 0, icon: eyeFill },
+    { number: meta?.share ?? 0, icon: shareFill }
   ];
 
   return (

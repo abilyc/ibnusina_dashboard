@@ -1,7 +1,7 @@
 import {gql} from '@apollo/client';
 
-export const getPosts = gql`query {
-  loadPosts(limit:5){
+export const getPosts = gql`query loadPosts($limit: Int!, $next: String!){
+  loadPosts(limit: $limit, timeStamp:$next){
     postResult{
       id
       cover: imageUrl
@@ -17,7 +17,6 @@ export const getPosts = gql`query {
       }
       createdAt
     }
-    
+    nextPost
   }
-}
-`
+}`

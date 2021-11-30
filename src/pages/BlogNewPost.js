@@ -15,7 +15,7 @@ export default function BlogNewPost() {
   const themeStretch = true;
 
   return (
-    <Page title="Blog: New Post | Minimal-UI">
+    <Page title="Blog: New Post | IBNU SINA">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading="Buat Posting"

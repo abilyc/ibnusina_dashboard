@@ -4,9 +4,9 @@ import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 // import { useEffect, useCallback, useState } from 'react';
-import { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { getPosts } from '../db/queries';
+import { useEffect, useCallback, useState } from 'react';
+import { useQuery, useLazyQuery } from '@apollo/client';
+import { getPosts } from '../db';
 // material
 import { Box, Grid, Button, Skeleton, Container, Stack } from '@mui/material';
 // redux
@@ -20,7 +20,6 @@ import { PATH_BLOG, PATH_PAGE } from '../routes/paths';
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 import { BlogPostCard, BlogPostsSort } from '../components/_dashboard/blog';
-import LoadingScreen from '../components/LoadingScreen';
 
 // ----------------------------------------------------------------------
 
@@ -29,6 +28,7 @@ const SORT_OPTIONS = [
   { value: 'terpopuler', label: 'terpopuler' },
   { value: 'terlama', label: 'terlama' }
 ];
+
 
 
 // ----------------------------------------------------------------------
@@ -65,30 +65,69 @@ export default function BlogPosts() {
   // const dispatch = useDispatch();
   
   const [filters, setFilters] = useState('terbaru');
-  const [posts, setPosts] = useState([{id: 'asd', cover: 'static/mock-images/covers/cover_2.jpg', title: 'asd', meta: {view: 5, comment: 'asdasd', share: 2}, author:{authorName: 'Admin', avatar:''}, createdAt: '1638162058'}]);
-  const { data, loading } = useQuery(getPosts, {fetchPolicy: 'cache-first'});
+  const [posts, setPosts] = useState([]);
+  const [nextpost, setNext] = useState('');
+  const [firstQuery, setFirst] = useState(true);
+  const [hasMore, setHasMore] = useState(true);
+  // const GetPost = ({limit,next}) => {
+  //   const { data, loading } = useQuery(getPosts, {variables: {limit: limit, next: next} ,fetchPolicy: 'cache-first'});
+  //   return [data, loading];
+  // }
+  // const [data] = GetPost({limit:7,next:''});
+
+
+  // function GetPost(){
+  //   const {data, loading} = useQuery(getPosts, {variables:{limit:firstQuery?7:8,next: nextpost}, fetchPolicy: 'network-only'})
+  //   if(firstQuery) setFirst(false);
+  //   useEffect(()=>{
+  //     console.log('test');
+  //     if(data){
+  //       if(posts?.length==0 && nextpost != data.nextPost){
+  //         setPosts(data.loadPosts.postResult);
+  //       }else{
+  //         if(posts[0].id != data.loadPosts.postResult[0].id)
+  //         setPosts(arr => [...arr, ...data.loadPosts.postResult])
+  //       }
+  //       setNext(data.loadPosts.nextPost);
+  //     }
+  //     // console.log(posts);
+  //   },[nextpost]);
+  //   return [loading];
+  // };
+  const [GetPost, {data, loading}] = useLazyQuery(getPosts, {variables:{limit:firstQuery?7:8,next: nextpost}, fetchPolicy: 'network-only'})
+  if(loading && firstQuery) setFirst(false);
   
   useEffect(()=>{
-    if(data){ 
-      setPosts(data?.loadPosts?.postResult);
+    if(data){
+      console.log('running');
+      if(posts?.length==0 && nextpost != data.nextPost){
+        setPosts(data.loadPosts.postResult);
+      }else{
+        if(posts[posts?.length]?.id != data.loadPosts.postResult[0].id)
+        setPosts(arr => [...arr, ...data.loadPosts.postResult])
+      }
+
+      if(data.nextPost == null) setHasMore(false);
+      setNext(data.loadPosts.nextPost);
     }
   },[data]);
+  
+  // TODO : query nexpost null
 
   // const { posts, hasMore, index, step } = useSelector((state) => state.blog);
   const sortedPosts = applySort(posts, filters);
-  // const onScroll = useCallback(() => dispatch(getMorePosts()), [dispatch]);
+  // const onScroll = useCallback(()=>{GetPost()},[posts]);
 
   // useEffect(() => {
   //   dispatch(getPostsInitial(index, step));
   // }, [dispatch, index, step]);
-
 
   const handleChangeSort = (event) => {
     setFilters(event.target.value);
   };
 
   return (
-    <Page title="Blog: Posts | Minimal-UI">
+    <Page title="Blog: Posts | IBNU SINA">
       <Container maxWidth={themeStretch ? false : 'lg'}>
         <HeaderBreadcrumbs
           heading="Blog"
@@ -114,20 +153,19 @@ export default function BlogPosts() {
         </Stack>
 
         <InfiniteScroll
-          // next={onScroll}
-          // hasMore={hasMore}
+          next={GetPost}
+          hasMore={hasMore}
           loader={SkeletonLoad}
-          dataLength={posts.length}
+          dataLength={posts?.length}
           style={{ overflow: 'inherit' }}
+          // height='100vh'
         >
           <Grid container spacing={3}>
-            {
-              loading ? <LoadingScreen item /> :
-              sortedPosts.map((post, index) => (
-                <BlogPostCard key={post.id} post={post} index={index} />
-              ))
-            
-            }
+              {
+                sortedPosts.map((post, index) => (
+                  <BlogPostCard key={post.id} post={post} index={index} />
+                ))
+              }
           </Grid>
         </InfiniteScroll>
       </Container>

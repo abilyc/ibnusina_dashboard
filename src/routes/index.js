@@ -4,11 +4,9 @@ import DashboardLayout from '../layouts/dashboard';
 // guards
 import GuestGuard from '../guards/GuestGuard';
 import AuthGuard from '../guards/AuthGuard';
-import Login from '../pages/authentication/Login';
 // import RoleBasedGuard from '../guards/RoleBasedGuard';
 // components
-import LoadingScreen from '../components/LoadingScreen';
-// import { BlogNewPostForm } from '../components/_dashboard/blog';
+import LoadingScreen from '../components/LoadingScreen';;
 
 // ----------------------------------------------------------------------
 
@@ -56,7 +54,7 @@ export default function Router() {
 
 // IMPORT COMPONENTS
 // Dashboard
+const Login = Loadable(lazy(() => import('../pages/authentication/Login')));
 const GeneralApp = Loadable(lazy(() => import('../pages/GeneralApp')));
 const BlogPosts = Loadable(lazy(() => import('../pages/BlogPosts')));
-// const BlogPost = Loadable(lazy(() => import('../pages/dashboard/BlogPost')));
 const BlogNewPost = Loadable(lazy(() => import('../pages/BlogNewPost')));
