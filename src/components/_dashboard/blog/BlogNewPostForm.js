@@ -34,21 +34,6 @@ import { addPost, getTagCat } from '../../../db';
 
 // ----------------------------------------------------------------------
 
-const TAGS_OPTION = [
-  'Toy Story 3',
-  'Logan',
-  'Full Metal Jacket',
-  'Dangal',
-  'The Sting',
-  '2001: A Space Odyssey',
-  "Singin' in the Rain",
-  'Toy Story',
-  'Bicycle Thieves',
-  'The Kid',
-  'Inglourious Basterds',
-  'Snatch',
-  '3 Idiots'
-];
 
 const LabelStyle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
@@ -67,15 +52,15 @@ export default function BlogNewPostForm() {
 
   const { data } = useQuery(getTagCat);
   useEffect(()=>{
-    if(data){
+    if(data && Tags !== data?.allTag){
       setTag(data.allTag);
       setCategory(data.allCategory)
     }
-  }, [data])
+  }, [data, Tags])
 
-  const handleOpenPreview = () => {
-    setOpen(true);
-  };
+  // const handleOpenPreview = () => {
+  //   setOpen(true);
+  // };
 
   const handleClosePreview = () => {
     setOpen(false);
@@ -83,9 +68,9 @@ export default function BlogNewPostForm() {
 
   const NewBlogSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
-    description: Yup.string().required('Description is required'),
+    summary: Yup.string().required('Description is required'),
     content: Yup.string().min(100).required('Content is required'),
-    cover: Yup.string().required('Cover is Required')
+    imageUrl: Yup.string().required('Cover is Required')
   });
 
 
@@ -106,6 +91,7 @@ export default function BlogNewPostForm() {
     },
     validationSchema: NewBlogSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
+      // console.log(values);
       const val = {
         ...values,
         published: (values.publish ? 2 : 1),
@@ -240,7 +226,9 @@ export default function BlogNewPostForm() {
                     freeSolo
                     value={values.tag}
                     onChange={(event, newValue) => {
+                      const nVal = newValue.map((v)=>Tags.find((o)=> v === o.title).id);
                       setFieldValue('tag', newValue);
+                      setFieldValue('tagId', nVal);                      
                     }}
                     options={Tags.map((option) => option.title)}
                     renderTags={(value, getTagProps) =>
@@ -256,7 +244,9 @@ export default function BlogNewPostForm() {
                     freeSolo
                     value={values.category}
                     onChange={(event, newValue) => {
+                      const nVal = newValue.map((v)=>Categories.find((o)=> v === o.title).id);
                       setFieldValue('category', newValue);
+                      setFieldValue('categoryId', nVal);
                     }}
                     options={Categories.map((option) => option.title)}
                     renderTags={(value, getTagProps) =>

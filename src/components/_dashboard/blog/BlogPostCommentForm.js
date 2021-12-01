@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { useFormik, Form, FormikProvider } from 'formik';
-import { useSnackbar } from 'notistack';
+// import { useSnackbar } from 'notistack';
 // material
 import { styled } from '@mui/material/styles';
 import { Stack, Typography, TextField } from '@mui/material';
@@ -19,7 +19,7 @@ const RootStyles = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function BlogPostCommentForm() {
-  const { enqueueSnackbar } = useSnackbar();
+  // const { enqueueSnackbar } = useSnackbar();
 
   const CommentSchema = Yup.object().shape({
     comment: Yup.string().required('Comment is required'),

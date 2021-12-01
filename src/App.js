@@ -7,7 +7,7 @@ import GlobalStyles from './theme/globalStyles';
 import RtlLayout from './components/RtlLayout';
 import NotistackProvider from './components/NotistackProvider';
 import ThemePrimaryColor from './components/ThemePrimaryColor';
-import LoadingScreen, { ProgressBarStyle } from './components/LoadingScreen';
+import { ProgressBarStyle } from './components/LoadingScreen';
 import { AuthProvider } from './contexts/useAuth';
 
 // ----------------------------------------------------------------------

@@ -70,21 +70,15 @@ export default function BlogPosts() {
   const [firstQuery, setFirst] = useState(true);
   const [hasMore, setHasMore] = useState(true);
   
-  const [GetPost, {data, loading}] = useLazyQuery(getPosts, {variables:{limit:firstQuery?7:8,next: nextpost}, fetchPolicy: 'cache-first'})
+  const [GetPost, {data, loading}] = useLazyQuery(getPosts)
   if(loading && firstQuery) setFirst(false);
   
   useEffect(()=>{
-    if(data){
-      if(posts?.length==0 && nextpost != data.nextPost){
-        setPosts(data.loadPosts.postResult);
-      }else{
-        if(posts[posts?.length]?.id != data.loadPosts.postResult[0].id)
+      if(data){
+        if(data.loadPosts.nextPost === null) setHasMore(false);
+        setNext(data.loadPosts.nextPost);
         setPosts(arr => [...arr, ...data.loadPosts.postResult])
-      }
-
-      if(data.nextPost == null) setHasMore(false);
-      setNext(data.loadPosts.nextPost);
-    }
+      };
   },[data]);
   
   const sortedPosts = applySort(posts, filters);
@@ -120,7 +114,7 @@ export default function BlogPosts() {
         </Stack>
 
         <InfiniteScroll
-          next={GetPost}
+          next={()=>{if(hasMore) GetPost({variables: {limit: firstQuery ? 7 : 8, next: nextpost}})}}
           hasMore={hasMore}
           loader={SkeletonLoad}
           dataLength={posts?.length}

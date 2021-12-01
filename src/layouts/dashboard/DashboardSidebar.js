@@ -9,7 +9,7 @@ import { Box, Link, Stack, Button, Drawer, Tooltip, Typography, CardActionArea }
 // import useAuth from '../../hooks/useAuth';
 import useCollapseDrawer from '../../hooks/useCollapseDrawer';
 // routes
-import { PATH_PAGE, PATH_DOCS } from '../../routes/paths';
+import { PATH_DOCS } from '../../routes/paths';
 // components
 import Logo from '../../components/Logo';
 import MyAvatar from '../../components/MyAvatar';

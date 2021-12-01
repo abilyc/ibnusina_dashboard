@@ -8,7 +8,7 @@ import windowsFilled from '@iconify/icons-ant-design/windows-filled';
 import { useTheme } from '@mui/material/styles';
 import { Box, Card, Rating, CardHeader, Typography, Stack } from '@mui/material';
 // utils
-import { fCurrency, fShortenNumber } from '../../../utils/formatNumber';
+import { fCurrency } from '../../../utils/formatNumber';
 import mockData from '../../../utils/mock-data';
 //
 import Label from '../../Label';
