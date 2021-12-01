@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 import DashboardLayout from '../layouts/dashboard';
+import LogoOnlyLayout from '../layouts/LogoOnlyLayout';
 // guards
 import GuestGuard from '../guards/GuestGuard';
 import AuthGuard from '../guards/AuthGuard';
@@ -26,6 +27,15 @@ const Loadable = (Component) => (props) => {
 
 export default function Router() {
   return useRoutes([
+    {
+      path: '*',
+      element: <LogoOnlyLayout />,
+      children: [
+        // { path: '500', element: <Page500 /> },
+        { path: '404', element: <NotFound /> },
+        { path: '*', element: <Navigate to="/404" replace /> }
+      ]
+    },
     {
       path: '/',
       element: (
@@ -58,3 +68,4 @@ const Login = Loadable(lazy(() => import('../pages/authentication/Login')));
 const GeneralApp = Loadable(lazy(() => import('../pages/GeneralApp')));
 const BlogPosts = Loadable(lazy(() => import('../pages/BlogPosts')));
 const BlogNewPost = Loadable(lazy(() => import('../pages/BlogNewPost')));
+const NotFound = Loadable(lazy(() => import('../pages/Page404')));

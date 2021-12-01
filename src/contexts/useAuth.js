@@ -43,7 +43,7 @@ export const useAuth = () => {
 }
 
 function useProvideAuth() {
-  const [value, setValue] = useLocalStorage('login');
+  const [value, setValue] = useLocalStorage('login', null);
 
   const isSignedIn = () => {
     if(value && value.token) return true; else return false;
