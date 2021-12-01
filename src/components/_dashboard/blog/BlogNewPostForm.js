@@ -1,7 +1,12 @@
 import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
-import { useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Form, FormikProvider, useFormik } from 'formik';
+import { useMutation, useQuery } from '@apollo/client';
+import { Icon } from '@iconify/react';
+import closeFill from '@iconify/icons-eva/close-fill';
+import { MIconButton } from '../../@material-extend';
+
 // material
 import { LoadingButton } from '@mui/lab';
 import { styled } from '@mui/material/styles';
@@ -25,6 +30,7 @@ import { QuillEditor } from '../../editor';
 // import { UploadSingleFile } from '../../upload';
 //
 import BlogNewPostPreview from './BlogNewPostPreview';
+import { addPost, getTagCat } from '../../../db';
 
 // ----------------------------------------------------------------------
 
@@ -53,8 +59,19 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function BlogNewPostForm() {
-  const { enqueueSnackbar } = useSnackbar();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
+  const [createPost] = useMutation(addPost);
+  const [Categories, setCategory] = useState([]);
+  const [Tags, setTag] = useState([]);
+
+  const { data } = useQuery(getTagCat);
+  useEffect(()=>{
+    if(data){
+      setTag(data.allTag);
+      setCategory(data.allCategory)
+    }
+  }, [data])
 
   const handleOpenPreview = () => {
     setOpen(true);
@@ -67,53 +84,67 @@ export default function BlogNewPostForm() {
   const NewBlogSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     description: Yup.string().required('Description is required'),
-    content: Yup.string().min(1000).required('Content is required'),
-    cover: Yup.mixed().required('Cover is required')
+    content: Yup.string().min(100).required('Content is required'),
+    cover: Yup.string().required('Cover is Required')
   });
+
 
   const formik = useFormik({
     initialValues: {
       title: '',
-      description: '',
+      summary: '',
       content: '',
-      cover: null,
-      tags: ['Logan'],
+      imageUrl: '',
+      tag: ['sejarah'],
+      tagId: ['1603b0d7-d025-4c9d-a90d-ac1aae214223'],
       publish: true,
       comments: true,
       metaTitle: '',
       metaDescription: '',
-      metaKeywords: ['Logan']
+      category: ['hiburan'],
+      categoryId: ['b074541c-fc09-41c4-a3a6-b62c1751c0a4']
     },
     validationSchema: NewBlogSchema,
     onSubmit: async (values, { setSubmitting, resetForm }) => {
-      console.log(values);
-      // try {
-      //   await fakeRequest(500);
-      //   resetForm();
-      //   handleClosePreview();
-      //   setSubmitting(false);
-      //   enqueueSnackbar('Post success', { variant: 'success' });
-      // } catch (error) {
-      //   console.error(error);
-      //   setSubmitting(false);
-      // }
+      const val = {
+        ...values,
+        published: (values.publish ? 2 : 1),
+      };
+      try {
+        const msg = (await createPost({variables: val})).data.addPost;
+        resetForm();
+        // handleClosePreview();
+        setSubmitting(false);
+        enqueueSnackbar(msg, {
+          variant: 'success',
+          action: (key) => (
+            <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+              <Icon icon={closeFill} />
+            </MIconButton>
+          )
+        });
+      } catch (error) {
+        setSubmitting(false);
+        // console.log(error);
+        enqueueSnackbar(error.toString(), {variant: 'error'});
+      }
     }
   });
 
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
 
-  const handleDrop = useCallback(
-    (acceptedFiles) => {
-      const file = acceptedFiles[0];
-      if (file) {
-        setFieldValue('cover', {
-          ...file,
-          preview: URL.createObjectURL(file)
-        });
-      }
-    },
-    [setFieldValue]
-  );
+  // const handleDrop = useCallback(
+  //   (acceptedFiles) => {
+  //     const file = acceptedFiles[0];
+  //     if (file) {
+  //       setFieldValue('cover', {
+  //         ...file,
+  //         preview: URL.createObjectURL(file)
+  //       });
+  //     }
+  //   },
+  //   [setFieldValue]
+  // );
 
   return (
     <>
@@ -137,9 +168,9 @@ export default function BlogNewPostForm() {
                     minRows={3}
                     maxRows={5}
                     label="Description"
-                    {...getFieldProps('description')}
-                    error={Boolean(touched.description && errors.description)}
-                    helperText={touched.description && errors.description}
+                    {...getFieldProps('summary')}
+                    error={Boolean(touched.summary && errors.summary)}
+                    helperText={touched.summary && errors.summary}
                   />
 
                   <div>
@@ -158,7 +189,16 @@ export default function BlogNewPostForm() {
                   </div>
 
                   <div>
-                    <LabelStyle>Cover</LabelStyle>
+                    <TextField
+                      fullWidth
+                      minRows={3}
+                      maxRows={5}
+                      label="Cover Image URL"
+                      {...getFieldProps('imageUrl')}
+                      error={Boolean(touched.imageUrl && errors.imageUrl)}
+                      helperText={touched.imageUrl && errors.imageUrl}
+                    />
+                    {/* <LabelStyle>Cover Link</LabelStyle> */}
                     {/* <UploadSingleFile
                       maxSize={3145728}
                       accept="image/*"
@@ -166,11 +206,11 @@ export default function BlogNewPostForm() {
                       onDrop={handleDrop}
                       error={Boolean(touched.cover && errors.cover)}
                     /> */}
-                    {touched.cover && errors.cover && (
+                    {/* {touched.cover && errors.cover && (
                       <FormHelperText error sx={{ px: 2 }}>
                         {touched.cover && errors.cover}
                       </FormHelperText>
-                    )}
+                    )} */}
                   </div>
                 </Stack>
               </Card>
@@ -198,6 +238,38 @@ export default function BlogNewPostForm() {
                   <Autocomplete
                     multiple
                     freeSolo
+                    value={values.tag}
+                    onChange={(event, newValue) => {
+                      setFieldValue('tag', newValue);
+                    }}
+                    options={Tags.map((option) => option.title)}
+                    renderTags={(value, getTagProps) =>
+                      value.map((option, index) => (
+                        <Chip {...getTagProps({ index })} key={option} size="small" label={option} />
+                      ))
+                    }
+                    renderInput={(params) => <TextField {...params} label="Tags" />}
+                  />
+
+                  <Autocomplete
+                    multiple
+                    freeSolo
+                    value={values.category}
+                    onChange={(event, newValue) => {
+                      setFieldValue('category', newValue);
+                    }}
+                    options={Categories.map((option) => option.title)}
+                    renderTags={(value, getTagProps) =>
+                      value.map((option, index) => (
+                        <Chip {...getTagProps({ index })} key={option} size="small" label={option} />
+                      ))
+                    }
+                    renderInput={(params) => <TextField {...params} label="Categories" />}
+                  />
+
+                  {/* <Autocomplete
+                    multiple
+                    freeSolo
                     value={values.tags}
                     onChange={(event, newValue) => {
                       setFieldValue('tags', newValue);
@@ -209,7 +281,7 @@ export default function BlogNewPostForm() {
                       ))
                     }
                     renderInput={(params) => <TextField {...params} label="Tags" />}
-                  />
+                  /> */}
 
                   <TextField fullWidth label="Meta title" {...getFieldProps('metaTitle')} />
 
@@ -222,7 +294,7 @@ export default function BlogNewPostForm() {
                     {...getFieldProps('metaDescription')}
                   />
 
-                  <Autocomplete
+                  {/* <Autocomplete
                     multiple
                     freeSolo
                     value={values.tags}
@@ -236,7 +308,7 @@ export default function BlogNewPostForm() {
                       ))
                     }
                     renderInput={(params) => <TextField {...params} label="Meta keywords" />}
-                  />
+                  /> */}
                 </Stack>
               </Card>
 

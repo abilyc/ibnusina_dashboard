@@ -69,12 +69,22 @@ function useProvideAuth() {
     return new ApolloClient({
       link,
       cache: new InMemoryCache(),
+      defaultOptions: {
+        watchQuery: {
+          fetchPolicy: 'cache-first',
+        },
+      },
     })
   }
 
   //   return new ApolloClient({
   //     uri: `https://tctshv3433.execute-api.us-east-1.amazonaws.com/test/graphql`,
   //     cache: new InMemoryCache(),
+      // defaultOptions: {
+      //   watchQuery: {
+      //     fetchPolicy: 'cache-first',
+      //   },
+      // },
   //     headers: getAuthHeaders(),
   //   })
   // }

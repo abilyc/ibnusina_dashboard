@@ -4,8 +4,8 @@ import plusFill from '@iconify/icons-eva/plus-fill';
 import { Link as RouterLink } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 // import { useEffect, useCallback, useState } from 'react';
-import { useEffect, useCallback, useState } from 'react';
-import { useQuery, useLazyQuery } from '@apollo/client';
+import { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { getPosts } from '../db';
 // material
 import { Box, Grid, Button, Skeleton, Container, Stack } from '@mui/material';
@@ -69,37 +69,12 @@ export default function BlogPosts() {
   const [nextpost, setNext] = useState('');
   const [firstQuery, setFirst] = useState(true);
   const [hasMore, setHasMore] = useState(true);
-  // const GetPost = ({limit,next}) => {
-  //   const { data, loading } = useQuery(getPosts, {variables: {limit: limit, next: next} ,fetchPolicy: 'cache-first'});
-  //   return [data, loading];
-  // }
-  // const [data] = GetPost({limit:7,next:''});
-
-
-  // function GetPost(){
-  //   const {data, loading} = useQuery(getPosts, {variables:{limit:firstQuery?7:8,next: nextpost}, fetchPolicy: 'network-only'})
-  //   if(firstQuery) setFirst(false);
-  //   useEffect(()=>{
-  //     console.log('test');
-  //     if(data){
-  //       if(posts?.length==0 && nextpost != data.nextPost){
-  //         setPosts(data.loadPosts.postResult);
-  //       }else{
-  //         if(posts[0].id != data.loadPosts.postResult[0].id)
-  //         setPosts(arr => [...arr, ...data.loadPosts.postResult])
-  //       }
-  //       setNext(data.loadPosts.nextPost);
-  //     }
-  //     // console.log(posts);
-  //   },[nextpost]);
-  //   return [loading];
-  // };
-  const [GetPost, {data, loading}] = useLazyQuery(getPosts, {variables:{limit:firstQuery?7:8,next: nextpost}, fetchPolicy: 'network-only'})
+  
+  const [GetPost, {data, loading}] = useLazyQuery(getPosts, {variables:{limit:firstQuery?7:8,next: nextpost}, fetchPolicy: 'cache-first'})
   if(loading && firstQuery) setFirst(false);
   
   useEffect(()=>{
     if(data){
-      console.log('running');
       if(posts?.length==0 && nextpost != data.nextPost){
         setPosts(data.loadPosts.postResult);
       }else{
@@ -112,15 +87,7 @@ export default function BlogPosts() {
     }
   },[data]);
   
-  // TODO : query nexpost null
-
-  // const { posts, hasMore, index, step } = useSelector((state) => state.blog);
   const sortedPosts = applySort(posts, filters);
-  // const onScroll = useCallback(()=>{GetPost()},[posts]);
-
-  // useEffect(() => {
-  //   dispatch(getPostsInitial(index, step));
-  // }, [dispatch, index, step]);
 
   const handleChangeSort = (event) => {
     setFilters(event.target.value);
