@@ -97,8 +97,9 @@ BlogPostCard.propTypes = {
 };
 
 export default function BlogPostCard({ post, index}) {
-  const { cover, title, meta, author, createdAt } = post;
-  const linkTo = `${PATH_PAGE.blog}/${paramCase(title)}`;
+  const { id, cover, title, slug, meta, author, createdAt } = post;
+  const data = {title, }
+  const linkTo = `${PATH_PAGE.blog}/${slug}`;
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
   // const actRef = useRef(null);
@@ -133,7 +134,7 @@ export default function BlogPostCard({ post, index}) {
             })
           }}
         >
-          <ActionPopover/>
+          <ActionPopover data={{id: id, title: title}}/>
           <SvgIconStyle
             color="paper"
             src="/static/icons/shape-avatar.svg"

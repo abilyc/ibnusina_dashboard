@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+// import { Link as RouterLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Grid, Box } from '@mui/material';
 import { MenuItem } from '@mui/material';
@@ -9,6 +10,7 @@ import { MIconButton } from '../../components/@material-extend';
 import deleteFilled from '@iconify/icons-ant-design/delete-filled';
 import editFilled from '@iconify/icons-ant-design/edit-filled';
 import editTwotone from '@iconify/icons-ant-design/edit-twotone';
+import { PATH_BLOG } from '../../routes/paths';
 
 const ActionIcon = styled(Grid)(({ theme }) => ({
     zIndex: 10,
@@ -37,37 +39,50 @@ const ActionIcon = styled(Grid)(({ theme }) => ({
 const MENU_OPTIONS = [
     {
         label: 'Edit Title',
+        val: 'title',
         icon: editTwotone,
         linkTo: '#'
     },
     {
         label: 'Edit Description',
+        val: 'summary',
         icon: editTwotone,
         linkTo: '#'
     },
     {
         label: 'Edit Content',
+        val: 'content',
         icon: editTwotone,
         linkTo: '#'
     },
     {
         label: 'Full Edit',
+        val: 'full',
         icon: editFilled,
         linkTo: '#'
       }
   ];
 
 
-export default function ActionPopover(){
+export default function ActionPopover(props){
   const delRef = useRef(null);
   const editRef = useRef(null);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
 
   const handleEdit = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const editFunct = (type) => {
+    setOpen(false);
+    const to = `${PATH_BLOG.root}/edit`;
+    const {id, title} = props.data;
+    navigate(to, {state:{id: id, title: title, type: type}});
   };
 
     return (
@@ -87,9 +102,9 @@ export default function ActionPopover(){
             {MENU_OPTIONS.map((option) => (
                 <MenuItem
                     key={option.label}
-                    to={option.linkTo}
-                    component={RouterLink}
-                    onClick={handleClose}
+                    // to={option.linkTo}
+                    // component={RouterLink}
+                    onClick={()=>{editFunct(option.val)}}
                     sx={{ typography: 'body2', py: 1, px: 2.5 }}
                 >
                     <Box

@@ -4,6 +4,7 @@ export { default as BlogPostCard } from './BlogPostCard';
 export { default as BlogPostCommentForm } from './BlogPostCommentForm';
 export { default as BlogPostCommentItem } from './BlogPostCommentItem';
 export { default as BlogPostCommentList } from './BlogPostCommentList';
+export { default as EditForm } from './BlogEditPostForm';
 // export { default as BlogPostHero } from './BlogPostHero';
 // export { default as BlogPostRecent } from './BlogPostRecent';
 // export { default as BlogPostsSearch } from './BlogPostsSearch';

@@ -48,7 +48,8 @@ export default function Router() {
         { path: 'app', element: <GeneralApp /> },
         { path: 'blog', element: <BlogPosts />},
         { path: 'ct', element: <p>category n tag</p>},
-        { path: 'blog/newpost', element: <BlogNewPost />}
+        { path: 'blog/new', element: <BlogNewPost />},
+        { path: 'blog/edit', element: <EditPost />}
       ]
     },
     {
@@ -69,3 +70,4 @@ const GeneralApp = Loadable(lazy(() => import('../pages/GeneralApp')));
 const BlogPosts = Loadable(lazy(() => import('../pages/BlogPosts')));
 const BlogNewPost = Loadable(lazy(() => import('../pages/BlogNewPost')));
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));
+const EditPost = Loadable(lazy(() => import('../pages/BlogEditPost')));
