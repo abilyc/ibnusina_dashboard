@@ -41,7 +41,7 @@ const applySort = (posts, sortBy) => {
     return orderBy(posts, ['createdAt'], ['asc']);
   }
   if (sortBy === 'terpopuler') {
-    return orderBy(posts, ['view'], ['desc']);
+    return orderBy(posts, ['meta']['view'], ['desc']);
   }
   return posts;
 };
@@ -77,7 +77,7 @@ export default function BlogPosts() {
     if(data){
       if(data.loadPosts.nextPost === null) setHasMore(false);
       setNext(data.loadPosts.nextPost);
-      setPosts(arr => [...arr, ...data.loadPosts.postResult]);
+      setPosts(arr => [...arr, ...data?.loadPosts?.postResult?.map((v)=>({...v, view: v?.meta?.view || 0}))]);
     };
   },[data]);
     

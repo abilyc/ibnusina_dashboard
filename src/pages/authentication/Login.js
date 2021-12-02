@@ -85,7 +85,7 @@ export default function Login() {
           {/* {method === 'firebase' && <AuthFirebaseSocials />} */}
 
           <Alert severity="info" sx={{ mb: 3 }}>
-            Use email : <strong>demo@minimals.cc</strong> / password :<strong>&nbsp;demo1234</strong>
+            Use email : <strong>joko</strong> / password :<strong>&nbsp;1234</strong>
           </Alert>
 
           <LoginForm />
