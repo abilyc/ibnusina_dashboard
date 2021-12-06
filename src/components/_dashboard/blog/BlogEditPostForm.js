@@ -57,9 +57,15 @@ export default function BlogEditPostForm(props) {
         } 
     },[data]);
 
+    const handleSave = async () => {
+        await editPost({variables: {id: id, type: upperCase(type), 
+            input: sCase()
+        }});
+    };
+
     useEffect(()=>{
-        updateData && 
-            enqueueSnackbar(updateData.quickUpdatePost, {
+        if(updateData){ 
+            enqueueSnackbar('Update Berhasil', {
                 variant: 'success',
                 action: (k) => (
                     <MIconButton size="small" onClick={() => closeSnackbar(k)}>
@@ -67,51 +73,41 @@ export default function BlogEditPostForm(props) {
                     </MIconButton>
                 )
             });
-        updateError && console.log(updateError);
-    },[updateLoading])
-    
-    const handleSave = async () => {
-        // try{
-            await editPost({variables: {id: id, type: upperCase(type), input: dataTitle}});
-            // enqueueSnackbar(updateData, {
-            //     variant: 'success',
-            //     action: (key) => (
-            //       <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-            //         <Icon icon={closeFill} />
-            //       </MIconButton>
-            //     )
-            //   });
-        // }catch(e){
-        //     enqueueSnackbar(e.message, {
-        //         variant: 'error',
-        //         action: (key) => (
-        //           <MIconButton size="small" onClick={() => closeSnackbar(key)}>
-        //             <Icon icon={closeFill} />
-        //           </MIconButton>
-        //         )
-        //     });
-        // }
+        }
+    },[updateData, updateLoading]);
+
+    const sCase = () => {
+        switch (type) {
+            case 'title':
+                return dataTitle
+            case 'summary':
+                return dataSummary;
+            default:
+                break;
+        }
     };
+    
     // const handleSaveSummary = () => {editPost({variables: {id: id, summary: dataSummary}})};
 
-    const handleChangeTitle = (e) => {
-        setDataTitle(e.target.value)
-        setshowButton(false);
+    const handleChange = (e) => {
+        showButton && setshowButton(false);
+        switch(type){
+            case 'title':
+                setDataTitle(e.target.value);
+                break;
+            case 'summary':
+                setDataSummary(e.target.value);
+                break;
+            default:
+
+        }
     };
-    const handleChangeSummary = (e) => {setDataSummary(e.target.value)}; 
 
     return !loading ? (
         <>
             {
                 type === 'title' && (
-                    <>
-                        <TextField fullWidth label='Title' onChange={handleChangeTitle} value={dataTitle} />
-                        <div hidden={showButton}>
-                            <IconBundle onClick={handleSave} icon={checkMark} sx={{padding: '3px', marginTop: '10px'}} color='#06b106' />
-                            <IconBundle onClick={()=>setshowButton(true)} icon={closeCircle} sx={{padding: '3px', marginTop: '10px'}} color='#ff2121' />
-                        </div>
-                        
-                    </>
+                        <TextField fullWidth label='Title' onChange={handleChange} value={dataTitle} />
                 )
             }
             {
@@ -122,10 +118,14 @@ export default function BlogEditPostForm(props) {
                         minRows={3}
                         maxRows={5}
                         label="Summary"
-                        onChange={(e)=>{handleChangeSummary(e)}}
+                        onChange={handleChange}
                         value={dataSummary}
                     />)
             }
+            <div hidden={showButton}>
+                <IconBundle onClick={handleSave} icon={checkMark} sx={{padding: '3px', marginTop: '10px'}} color='#06b106' />
+                <IconBundle onClick={()=>setshowButton(true)} icon={closeCircle} sx={{padding: '3px', marginTop: '10px'}} color='#ff2121' />
+            </div>
         </>
-    ) : <LoadingScreen />;
+    ) : <LoadingScreen sx={{marginTop: '150px'}} />;
 }
