@@ -17,6 +17,7 @@ import useIsMountedRef from '../../hooks/useIsMountedRef';
 import { MIconButton } from '../../components/@material-extend';
 import MyAvatar from '../../components/MyAvatar';
 import MenuPopover from '../../components/MenuPopover';
+import { PATH_PAGE } from '../../routes/paths';
 
 // ----------------------------------------------------------------------
 
@@ -61,7 +62,7 @@ export default function AccountPopover() {
       if (isMountedRef.current) {
         handleClose();
       }
-      navigate('/');
+      navigate(PATH_PAGE.root);
     } catch (error) {
       // console.error(error);
       // enqueueSnackbar('Unable to logout', { variant: 'error' });

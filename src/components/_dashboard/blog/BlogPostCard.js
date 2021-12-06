@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 // import { useRef } from 'react';
-import { paramCase } from 'change-case';
+// import { paramCase } from 'change-case';
 import eyeFill from '@iconify/icons-eva/eye-fill';
 import { Link as RouterLink } from 'react-router-dom';
 import { Icon } from '@iconify/react';
@@ -12,14 +12,13 @@ import messageCircleFill from '@iconify/icons-eva/message-circle-fill';
 // material
 import { styled } from '@mui/material/styles';
 import { Box, Card, Grid, Avatar, Typography, CardContent } from '@mui/material';
-// routes
-import { PATH_PAGE } from '../../../routes/paths';
 // utils
 import { fDate } from '../../../utils/formatTime';
 import { fShortenNumber } from '../../../utils/formatNumber';
 //
 import SvgIconStyle from '../../SvgIconStyle';
 import ActionPopover from '../../../layouts/dashboard/ActionPopover';
+import { useState } from 'react';
 // import { MIconButton } from '../../@material-extend';
 
 // ----------------------------------------------------------------------
@@ -50,7 +49,21 @@ const CardMediaStyle = styled('div')({
 //   }
 // }));
 
-const TitleStyle = styled(RouterLink)(({ theme }) => ({
+// const TitleStyle = styled(RouterLink)(({ theme }) => ({
+//   ...theme.typography.subtitle2,
+//   height: 44,
+//   color: 'inherit',
+//   overflow: 'hidden',
+//   WebkitLineClamp: 2,
+//   display: '-webkit-box',
+//   WebkitBoxOrient: 'vertical',
+//   textDecoration: 'none',
+//   '&:hover': {
+//     textDecoration: 'underline'
+//   }
+// }));
+
+const StyledTitle = styled(Typography)(({ theme }) => ({
   ...theme.typography.subtitle2,
   height: 44,
   color: 'inherit',
@@ -59,9 +72,6 @@ const TitleStyle = styled(RouterLink)(({ theme }) => ({
   display: '-webkit-box',
   WebkitBoxOrient: 'vertical',
   textDecoration: 'none',
-  '&:hover': {
-    textDecoration: 'underline'
-  }
 }));
 
 const AvatarStyle = styled(Avatar)(({ theme }) => ({
@@ -98,8 +108,8 @@ BlogPostCard.propTypes = {
 
 export default function BlogPostCard({ post, index}) {
   const { id, cover, title, slug, meta, author, createdAt } = post;
-  const data = {title, }
-  const linkTo = `${PATH_PAGE.blog}/${slug}`;
+  const [dataTitle, setDataTitle] = useState(title);
+  // const linkTo = `${PATH_PAGE.blog}/${slug}`;
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
   // const actRef = useRef(null);
@@ -110,9 +120,13 @@ export default function BlogPostCard({ post, index}) {
     { number: meta?.share ?? 0, icon: shareFill }
   ];
 
+  const HandleSave = (v) => {
+    setDataTitle(v);
+  };
+
   return (
     <Grid item xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
-      <Card sx={{ position: 'relative' }}>
+      <Card sx={{ position: 'relative', overflow: 'hidden' }}>
         <CardMediaStyle
           sx={{
             ...((latestPostLarge || latestPost) && {
@@ -179,7 +193,7 @@ export default function BlogPostCard({ post, index}) {
             {fDate(createdAt)}
           </Typography>
 
-          <TitleStyle
+          {/* <TitleStyle
             to={linkTo}
             sx={{
               ...(latestPostLarge && { typography: 'h5', height: 60 }),
@@ -187,9 +201,23 @@ export default function BlogPostCard({ post, index}) {
                 color: 'common.white'
               })
             }}
-          >
+          >dashboard
             {title}
-          </TitleStyle>
+          </TitleStyle> */}
+          <StyledTitle 
+            sx={{
+              ...((latestPostLarge || latestPost) && 
+                  {
+                    filter: 'invert(1) grayscale(1) contrast(9) drop-shadow(.05em .05em white)',
+                    textShadow: '0 0 3px rgba(0,0,0,0.6)',
+                    typography: 'h5', 
+                    height: 60
+                  })
+            }}
+          >
+            {dataTitle}
+          </StyledTitle>
+            {/* <TitleEdit value={dataTitle} editOnViewClick={true} onSave={HandleSave} /> */}
 
           <InfoStyle>
             {POST_INFO.map((info, index) => (

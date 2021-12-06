@@ -111,7 +111,7 @@ function useProvideAuth() {
     })
 
     const loginData = result?.data?.getLogin;
-
+    
     if (loginData) {
       setValue(loginData)
     }

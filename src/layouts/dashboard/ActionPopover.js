@@ -80,7 +80,7 @@ export default function ActionPopover(props){
 
   const editFunct = (type) => {
     setOpen(false);
-    const to = `${PATH_BLOG.root}/edit`;
+    const to = PATH_BLOG.edit;
     const {id, title} = props.data;
     navigate(to, {state:{id: id, title: title, type: type}});
   };

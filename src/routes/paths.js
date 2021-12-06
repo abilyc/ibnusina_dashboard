@@ -16,7 +16,8 @@ export const PATH_PAGE = {
 
 export const PATH_BLOG = {
   root: ROOT_BLOG,
-  newpost: path(ROOT_BLOG, '/newpost')
+  newpost: path(ROOT_BLOG, '/new'),
+  edit: path(ROOT_BLOG, '/edit'),
 }
 
 
