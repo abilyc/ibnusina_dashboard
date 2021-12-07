@@ -130,14 +130,14 @@ export default function BlogEditPostForm(props) {
                 await editPost({variables: {id: id, type: upperCase(type), 
                     input: values[type]
                 }});
-                enqueueSnackbar('Update Berhasil', {
+                if(updateData){enqueueSnackbar('Update Berhasil', {
                     variant: 'success',
                     action: (k) => (
                         <MIconButton size="small" onClick={() => closeSnackbar(k)}>
                             <Icon icon={closeFill} />
                         </MIconButton>
                     )
-                });
+                });}
             } catch(e) {
                 enqueueSnackbar('Update Gagal', {
                     variant: 'Error',
