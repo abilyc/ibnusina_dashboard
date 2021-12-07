@@ -50,9 +50,9 @@ function useProvideAuth() {
   }
 
   const getAuthHeaders = () => {
-    if (!value?.token) return null
+    if (!value?.token) return null;
     return {
-      "authorization": `${value.token}`,
+      "Authorization": `${value.token}`,
     }
   }
 
