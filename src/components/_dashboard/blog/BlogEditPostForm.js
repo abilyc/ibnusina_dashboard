@@ -13,10 +13,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { Form, FormikProvider, useFormik } from 'formik';
 
-// import { Navigate } from 'react-router-dom';
-// import { PATH_BLOG } from '../../../routes/paths';
-
-//Query
 import { postById, updatePost } from '../../../db';
 import LoadingScreen from '../../LoadingScreen';
 import { useSnackbar } from 'notistack';
@@ -36,84 +32,15 @@ const IconBundle = ({onClick, icon, color, ...other}) => {
 export default function BlogEditPostForm(props) {
     const { id, type, title } = props.data;
     const navigate = useNavigate();
-    // const [ dataTitle, setDataTitle ] = useState(title);
-    // const [ dataType, setDataType ] = useState('');
-    // const [ dataSummary, setDataSummary ] = useState('');
-    // const [ dataContent, setDataContent ] = useState('');
     const [ hideButton, sethideButton ] = useState(true);
 
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
-    const [getData, { data, loading }] = useLazyQuery(postById(lowerCase(type)));
+    const [getData, { data, loading, error }] = useLazyQuery(postById(lowerCase(type)));
     const [editPost, { data: updateData, loading: updateLoading, error: updateError }] = useMutation(updatePost);
     
-    // useEffect(()=>{
-    //     if(['summary', 'content'].includes(type)) getData({variables:{id: id}});
-    //     if(data){
-    //         switch(type){
-    //             case 'summary': 
-    //                 setDataSummary(data.postById.summary === null ? '' : data.postById.summary);
-    //                 break;
-    //             case 'content':
-    //                 setDataContent(data.postById.content === null ? '' : data.postById.content);
-    //                 break;
-    //             default:
-    //                 break;
-    //         }
-    //     } 
-    // },[data]);
-
-    // const sCase = () => {
-    //     switch (type) {
-    //         case 'title':
-    //             return dataTitle;
-    //         case 'summary':
-    //             return dataSummary;
-    //         case 'content':
-    //             return dataContent;
-    //         default:
-    //             break;
-    //     }
-    // };
-
-    // const handleSave = async () => {
-    //     await editPost({variables: {id: id, type: upperCase(type), 
-    //         input: sCase()
-    //     }});
-    // };
-
-    // useEffect(()=>{
-    //     if(updateData){ 
-    //         enqueueSnackbar('Update Berhasil', {
-    //             variant: 'success',
-    //             action: (k) => (
-    //                 <MIconButton size="small" onClick={() => closeSnackbar(k)}>
-    //                     <Icon icon={closeFill} />
-    //                 </MIconButton>
-    //             )
-    //         });
-    //     }
-    // },[updateLoading, updateData]);
-
-    
-    // const handleSaveSummary = () => {editPost({variables: {id: id, summary: dataSummary}})};
-
     const handleChange = () => {
         hideButton && sethideButton(false);
-    //     switch(type){
-    //         case 'title':
-    //             setDataTitle(e.target.value);
-    //             break;
-    //         case 'summary':
-    //             setDataSummary(e.target.value);
-    //             break;
-    //         case 'content':
-    //             setDataContent(e);
-    //             break;
-    //         default:
-    //             break;
-
-    //     }
     };
 
     
@@ -160,6 +87,7 @@ export default function BlogEditPostForm(props) {
     useEffect(()=>{
         if(data) setFieldValue(type, data.postById[type]);
         if(updateData) enqueueSnackbar('Update Berhasil', {
+            preventDuplicate: true,
             variant: 'success',
             action: (k) => (
                 <MIconButton size="small" onClick={() => closeSnackbar(k)}>
@@ -169,9 +97,17 @@ export default function BlogEditPostForm(props) {
         });
     },[data, updateData])
 
-    // useEffect(()=>{
-    //     console.log(updateError);
-    // },[updateError])
+    useEffect(()=>{
+        
+        error && enqueueSnackbar(error.message, {
+            variant: 'Error',
+            action: (k) => (
+                <MIconButton size="small" onClick={() => closeSnackbar(k)}>
+                    <Icon icon={closeFill} />
+                </MIconButton>
+            )
+        });
+    },[error])
 
 
 
@@ -207,7 +143,7 @@ export default function BlogEditPostForm(props) {
                 <QuillEditor 
                     id='edit-content'
                     value={values.content}
-                    onChange={v => {setFieldValue('content',v)}}
+                    onChange={v => {setFieldValue('content',v); handleChange()}}
                 />
             }
                 <div hidden={hideButton}>

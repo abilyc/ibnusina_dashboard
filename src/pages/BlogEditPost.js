@@ -7,7 +7,7 @@ import { PATH_BLOG, PATH_PAGE } from '../routes/paths';
 // components
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
-import { EditForm } from '../components/_dashboard/blog';
+import { BlogNewPostForm, EditForm } from '../components/_dashboard/blog';
 import { useLocation } from 'react-router-dom';
 import { capitalCase } from 'capital-case';
 
@@ -16,6 +16,7 @@ import { capitalCase } from 'capital-case';
 export default function BlogEditPost() {
   const themeStretch = true;
   const type = capitalCase(useLocation().state.type);
+  const data = useLocation().state;
 
   return (
     <Page title={`Edit Post ${type} | IBNU SINA`}>
@@ -29,7 +30,8 @@ export default function BlogEditPost() {
           ]}
         />
 
-        <EditForm data={useLocation().state} />
+        {type === 'Full' ? <BlogNewPostForm data={data} /> :
+        <EditForm data={data} />}
       </Container>
     </Page>
   );
