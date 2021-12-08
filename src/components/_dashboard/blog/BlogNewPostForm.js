@@ -2,10 +2,12 @@ import * as Yup from 'yup';
 import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { Form, FormikProvider, useFormik } from 'formik';
-import { useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { Icon } from '@iconify/react';
 import closeFill from '@iconify/icons-eva/close-fill';
 import { MIconButton } from '../../@material-extend';
+import LoadingScreen from '../../LoadingScreen';
+
 
 // material
 import { LoadingButton } from '@mui/lab';
@@ -30,7 +32,7 @@ import { QuillEditor } from '../../editor';
 // import { UploadSingleFile } from '../../upload';
 //
 import BlogNewPostPreview from './BlogNewPostPreview';
-import { addPost, getTagCat } from '../../../db';
+import { addPost, fullUpdatePost, getTagCat, postById } from '../../../db';
 
 // ----------------------------------------------------------------------
 
@@ -43,13 +45,18 @@ const LabelStyle = styled(Typography)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function BlogNewPostForm() {
+export default function BlogNewPostForm(props) {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [open, setOpen] = useState(false);
   const [createPost] = useMutation(addPost);
-  const [Categories, setCategory] = useState([]);
+  const [updatePost] = useMutation(fullUpdatePost);
+  const [categories, setCategory] = useState([]);
   const [Tags, setTag] = useState([]);
-
+  
+  const [getFull, {data: fullData, loading: loadingFullData, error: errorFullData }] = useLazyQuery(postById('title summary content imageUrl category{id title} tag{id title}'));
+  
+  
+  
   const { data } = useQuery(getTagCat);
   useEffect(()=>{
     if(data && Tags !== data?.allTag){
@@ -57,23 +64,23 @@ export default function BlogNewPostForm() {
       setCategory(data.allCategory)
     }
   }, [data, Tags])
-
+  
   // const handleOpenPreview = () => {
-  //   setOpen(true);
-  // };
-
-  const handleClosePreview = () => {
-    setOpen(false);
-  };
-
-  const NewBlogSchema = Yup.object().shape({
-    title: Yup.string().required('Title is required'),
+    //   setOpen(true);
+    // };
+    
+    const handleClosePreview = () => {
+      setOpen(false);
+    };
+    
+    const NewBlogSchema = Yup.object().shape({
+      title: Yup.string().required('Title is required'),
     summary: Yup.string().required('Description is required'),
     content: Yup.string().min(100).required('Content is required'),
     imageUrl: Yup.string().required('Cover is Required')
   });
-
-
+  
+  
   const formik = useFormik({
     initialValues: {
       title: '',
@@ -97,11 +104,15 @@ export default function BlogNewPostForm() {
         published: (values.publish ? 2 : 1),
       };
       try {
-        const msg = (await createPost({variables: val})).data.addPost;
-        resetForm();
+        if(props){
+          await updatePost({variables: {id: props.data.id, ...val}});
+        }else{
+          await createPost({variables: val});
+          resetForm();
+        }
         // handleClosePreview();
         setSubmitting(false);
-        enqueueSnackbar(msg, {
+        enqueueSnackbar('Berhasil', {
           variant: 'success',
           action: (key) => (
             <MIconButton size="small" onClick={() => closeSnackbar(key)}>
@@ -116,8 +127,32 @@ export default function BlogNewPostForm() {
       }
     }
   });
+  
+  useEffect(()=>{
+    if(props?.data){
+      const { id } = props.data;
+      getFull({variables: {id: id}});
+    };
+  },[props]);
 
+  
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
+  
+  useEffect(()=>{
+    if(fullData){
+      console.log(fullData.postById)
+      const {title, summary, content, imageUrl} = fullData.postById;
+      const getTagCat = (variant, key) => fullData.postById[variant].map(v=>v[key]);
+      setFieldValue('title', title);
+      setFieldValue('summary', summary);
+      setFieldValue('content', content);
+      setFieldValue('imageUrl', imageUrl);
+      setFieldValue('tag', getTagCat('tag', 'titile'));
+      setFieldValue('category', getTagCat('category', 'titile'));
+      setFieldValue('tagId', getTagCat('tag', 'id'));
+      setFieldValue('categoryId', getTagCat('category', 'id'));
+    }
+  },[fullData]);
 
   // const handleDrop = useCallback(
   //   (acceptedFiles) => {
@@ -132,7 +167,7 @@ export default function BlogNewPostForm() {
   //   [setFieldValue]
   // );
 
-  return (
+  return loadingFullData ? <LoadingScreen sx={{marginTop: '150px'}} /> : (
     <>
       <FormikProvider value={formik}>
         <Form noValidate autoComplete="off" onSubmit={handleSubmit}>
@@ -228,12 +263,12 @@ export default function BlogNewPostForm() {
                     onChange={(event, newValue) => {
                       const nVal = newValue.map((v)=>Tags.find((o)=> v === o.title).id);
                       setFieldValue('tag', newValue);
-                      setFieldValue('tagId', nVal);                      
+                      setFieldValue('tagId', nVal);              
                     }}
                     options={Tags.map((option) => option.title)}
                     renderTags={(value, getTagProps) =>
                       value.map((option, index) => (
-                        <Chip {...getTagProps({ index })} key={option} size="small" label={option} />
+                        <Chip {...getTagProps({ index })} key={option?.id} size="small" label={option} />
                       ))
                     }
                     renderInput={(params) => <TextField {...params} label="Tags" />}
@@ -244,11 +279,11 @@ export default function BlogNewPostForm() {
                     freeSolo
                     value={values.category}
                     onChange={(event, newValue) => {
-                      const nVal = newValue.map((v)=>Categories.find((o)=> v === o.title).id);
+                      const nVal = newValue.map((v)=>categories.find((o)=> v === o.title).id);
                       setFieldValue('category', newValue);
                       setFieldValue('categoryId', nVal);
                     }}
-                    options={Categories.map((option) => option.title)}
+                    options={categories.map((option) => option.title)}
                     renderTags={(value, getTagProps) =>
                       value.map((option, index) => (
                         <Chip {...getTagProps({ index })} key={option} size="small" label={option} />

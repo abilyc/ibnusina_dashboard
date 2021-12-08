@@ -49,3 +49,16 @@ export const updatePost = gql`mutation quickUpdatePost($type: ToEdit!, $id: ID!,
   quickUpdatePost(edit: $type, postId: $id, changeTo: $input)
 }
 `
+
+export const fullUpdatePost = gql`mutation updatePost($id: ID!, $title: String!, $summary: String!, $published: Int!, $content: String!, $imageUrl: String!, $categoryId: [ID], $tagId: [ID]){
+  updatePost(postId: $id, input: {
+    title: $title
+    summary: $summary
+    published: $published
+    content: $content
+    imageUrl: $imageUrl
+    categoryId: $categoryId
+    tagId: $tagId
+  })
+}
+`
