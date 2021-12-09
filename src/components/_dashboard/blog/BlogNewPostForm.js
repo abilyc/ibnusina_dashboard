@@ -64,6 +64,19 @@ export default function BlogNewPostForm(props) {
       setCategory(data.allCategory)
     }
   }, [data, Tags])
+
+  useEffect(()=>{
+    if(errorFullData){
+      enqueueSnackbar(errorFullData?.message, {
+        variant: 'error',
+        action: (key) => (
+          <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+            <Icon icon={closeFill} />
+          </MIconButton>
+        )
+      });
+    }
+  },[errorFullData])
   
   // const handleOpenPreview = () => {
     //   setOpen(true);
@@ -75,10 +88,10 @@ export default function BlogNewPostForm(props) {
     
     const NewBlogSchema = Yup.object().shape({
       title: Yup.string().required('Title is required'),
-    summary: Yup.string().required('Description is required'),
-    content: Yup.string().min(100).required('Content is required'),
-    imageUrl: Yup.string().required('Cover is Required')
-  });
+      summary: Yup.string().required('Description is required'),
+      content: Yup.string().min(100).required('Content is required'),
+      imageUrl: Yup.string().required('Cover is Required')
+    });
   
   
   const formik = useFormik({
@@ -139,9 +152,8 @@ export default function BlogNewPostForm(props) {
   const { errors, values, touched, handleSubmit, isSubmitting, setFieldValue, getFieldProps } = formik;
   
   useEffect(()=>{
-    if(fullData){
-      console.log(fullData.postById)
-      const {title, summary, content, imageUrl} = fullData.postById;
+    if(fullData?.postById){
+      const {title, summary, content, imageUrl} = fullData?.postById;
       const getTagCat = (variant, key) => fullData.postById[variant].map(v=>v[key]);
       setFieldValue('title', title);
       setFieldValue('summary', summary);
@@ -183,7 +195,7 @@ export default function BlogNewPostForm(props) {
                     helperText={touched.title && errors.title}
                   />
 
-                  <TextField
+                  {/* <TextField
                     fullWidth
                     multiline
                     minRows={3}
@@ -192,7 +204,7 @@ export default function BlogNewPostForm(props) {
                     {...getFieldProps('summary')}
                     error={Boolean(touched.summary && errors.summary)}
                     helperText={touched.summary && errors.summary}
-                  />
+                  /> */}
 
                   <div>
                     <LabelStyle>Content</LabelStyle>
@@ -308,15 +320,17 @@ export default function BlogNewPostForm(props) {
                     renderInput={(params) => <TextField {...params} label="Tags" />}
                   /> */}
 
-                  <TextField fullWidth label="Meta title" {...getFieldProps('metaTitle')} />
+                  {/* <TextField fullWidth label="Meta title" {...getFieldProps('metaTitle')} /> */}
 
                   <TextField
                     fullWidth
                     multiline
                     minRows={3}
                     maxRows={5}
-                    label="Meta description"
-                    {...getFieldProps('metaDescription')}
+                    label="Description"
+                    {...getFieldProps('summary')}
+                    error={Boolean(touched.summary && errors.summary)}
+                    helperText={touched.summary && errors.summary}
                   />
 
                   {/* <Autocomplete

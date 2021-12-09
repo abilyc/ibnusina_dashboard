@@ -6,7 +6,8 @@ import {
   InMemoryCache,
   gql,
   HttpLink
-} from '@apollo/client'
+} from '@apollo/client';
+import jwtDecode from 'jwt-decode';
 import { useContext, createContext } from 'react'
 // import {
 //   ApolloProvider,
@@ -46,7 +47,13 @@ function useProvideAuth() {
   const [value, setValue] = useLocalStorage('login', null);
 
   const isSignedIn = () => {
-    if(value && value.token) return true; else return false;
+    if(value && value.token){
+      const decoded = jwtDecode(value.token);
+      const currentTime = Date.now() / 1000;
+
+      return decoded.exp > currentTime;
+    } 
+    return false;
   }
 
   const getAuthHeaders = () => {
