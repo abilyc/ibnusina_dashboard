@@ -66,8 +66,8 @@ function useProvideAuth() {
   const createApolloClient = () => {
 
   const httpLink = new HttpLink({
-      uri: `https://tctshv3433.execute-api.us-east-1.amazonaws.com/test/graphql`,
-      // uri: `https://3t2zg4dxxl.execute-api.us-east-1.amazonaws.com/dev/graphql`,
+      // uri: `https://tctshv3433.execute-api.us-east-1.amazonaws.com/test/graphql`,
+      uri: `https://3t2zg4dxxl.execute-api.us-east-1.amazonaws.com/dev/graphql`,
       headers: getAuthHeaders(),
     })
 
@@ -93,7 +93,7 @@ function useProvideAuth() {
       //   },
       // },
   //     headers: getAuthHeaders(),
-  //   })
+  //   })https://tctshv3433.execute-api.us-east-1.amazonaws.com/test/graphql
   // }
 
   const signIn = async ({ username, password }) => {

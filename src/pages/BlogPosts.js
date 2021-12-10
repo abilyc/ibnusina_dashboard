@@ -1,12 +1,13 @@
 import { orderBy } from 'lodash';
 import { Icon } from '@iconify/react';
 import plusFill from '@iconify/icons-eva/plus-fill';
+import closeFill from '@iconify/icons-eva/close-fill';
 import { Link as RouterLink } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 // import { useEffect, useCallback, useState } from 'react';
 import { useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
-import { getPosts } from '../db';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { deletePost, getPosts } from '../db';
 // material
 import { Box, Grid, Button, Skeleton, Container, Stack } from '@mui/material';
 // redux
@@ -20,6 +21,8 @@ import { PATH_BLOG, PATH_PAGE } from '../routes/paths';
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 import { BlogPostCard, BlogPostsSort } from '../components/_dashboard/blog';
+import { MIconButton } from '../components/@material-extend';
+import { useSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
@@ -69,8 +72,13 @@ export default function BlogPosts() {
   const [nextpost, setNext] = useState('');
   const [firstQuery, setFirst] = useState(true);
   const [hasMore, setHasMore] = useState(true);
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+
   
   const [GetPost, {data, loading}] = useLazyQuery(getPosts)
+  const [delPost, {data: delData}] = useMutation(deletePost);
+
+
   if(loading && firstQuery) setFirst(false);
   
   useEffect(()=>{
@@ -89,6 +97,24 @@ export default function BlogPosts() {
   },[firstQuery]);
   
   const sortedPosts = applySort(posts, filters);
+
+  async function dlPost(id) {
+    await delPost({variables: {id: id}});
+  }
+
+  useEffect(()=>{
+    if(delData){
+      setPosts(arr => arr.filter(v => v.id !== delData.deletePost));
+      enqueueSnackbar('Delete Berhasil', {
+        variant: 'success',
+        action: (key) => (
+          <MIconButton size="small" onClick={() => closeSnackbar(key)}>
+            <Icon icon={closeFill} />
+          </MIconButton>
+        )
+      });
+    }
+  },[delData]);
 
   const handleChangeSort = (event) => {
     setFilters(event.target.value);
@@ -131,7 +157,7 @@ export default function BlogPosts() {
           <Grid container spacing={3}>
               {
                 sortedPosts.map((post, index) => (
-                  <BlogPostCard key={post.id} post={post} index={index} />
+                  <BlogPostCard key={post.id} post={post} index={index} del={dlPost} />
                 ))
               }
           </Grid>

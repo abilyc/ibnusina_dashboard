@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import PropTypes from 'prop-types';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { Grid, Box } from '@mui/material';
@@ -63,12 +64,16 @@ const MENU_OPTIONS = [
   ];
 
 
-export default function ActionPopover(props){
+ActionPopover.propTypes = {
+    data: PropTypes.object.isRequired,
+    del: PropTypes.func.isRequired
+}
+
+export default function ActionPopover({data, del}){
   const delRef = useRef(null);
   const editRef = useRef(null);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-
 
   const handleEdit = () => {
     setOpen(true);
@@ -77,10 +82,14 @@ export default function ActionPopover(props){
     setOpen(false);
   };
 
+  const handleDel = () => {
+    del(data.id)
+  }
+
   const editFunct = (type) => {
     setOpen(false);
     const to = PATH_BLOG.edit;
-    const {id, title} = props.data;
+    const {id, title} = data;
     navigate(to, {state:{id: id, title: title, type: type}});
   };
 
@@ -91,7 +100,7 @@ export default function ActionPopover(props){
                 <MIconButton id='edit' ref={editRef} onClick={handleEdit} size='small'>
                     <Icon icon={editFilled} fontSize='small'/>
                 </MIconButton>
-                <MIconButton id='delete' ref={delRef} size='small'>
+                <MIconButton id='delete' ref={delRef} onClick={handleDel} size='small'>
                     <Icon icon={deleteFilled} fontSize='small'/>
                 </MIconButton>
             </ActionIcon>

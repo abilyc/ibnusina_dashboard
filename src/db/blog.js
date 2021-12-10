@@ -62,3 +62,8 @@ export const fullUpdatePost = gql`mutation updatePost($id: ID!, $title: String!,
   })
 }
 `
+
+export const deletePost = gql`mutation deletePost($id: ID!){
+  deletePost(postId: $id)
+}
+`

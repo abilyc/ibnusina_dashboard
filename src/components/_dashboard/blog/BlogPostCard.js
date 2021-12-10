@@ -17,7 +17,6 @@ import { fShortenNumber } from '../../../utils/formatNumber';
 //
 import SvgIconStyle from '../../SvgIconStyle';
 import ActionPopover from '../../../layouts/dashboard/ActionPopover';
-import { useState } from 'react';
 // import { MIconButton } from '../../@material-extend';
 
 // ----------------------------------------------------------------------
@@ -102,12 +101,12 @@ const CoverImgStyle = styled('img')({
 
 BlogPostCard.propTypes = {
   post: PropTypes.object.isRequired,
-  index: PropTypes.number
+  index: PropTypes.number,
+  del: PropTypes.func.isRequired
 };
 
-export default function BlogPostCard({ post, index}) {
+export default function BlogPostCard({ post, index, del}) {
   const { id, cover, title, slug, meta, author, createdAt } = post;
-  const [dataTitle, setDataTitle] = useState(title);
   // const linkTo = `${PATH_PAGE.blog}/${slug}`;
   const latestPostLarge = index === 0;
   const latestPost = index === 1 || index === 2;
@@ -118,10 +117,6 @@ export default function BlogPostCard({ post, index}) {
     { number: meta?.view ?? 0, icon: eyeFill },
     { number: meta?.share ?? 0, icon: shareFill }
   ];
-
-  const HandleSave = (v) => {
-    setDataTitle(v);
-  };
 
   return (
     <Grid item xs={12} sm={latestPostLarge ? 12 : 6} md={latestPostLarge ? 6 : 3}>
@@ -147,7 +142,7 @@ export default function BlogPostCard({ post, index}) {
             })
           }}
         >
-          <ActionPopover data={{id: id, title: title}}/>
+          <ActionPopover data={{id: id, title: title}} del={del} />
           <SvgIconStyle
             color="paper"
             src="/static/icons/shape-avatar.svg"
@@ -214,7 +209,7 @@ export default function BlogPostCard({ post, index}) {
                   })
             }}
           >
-            {dataTitle}
+            {title}
           </StyledTitle>
             {/* <TitleEdit value={dataTitle} editOnViewClick={true} onSave={HandleSave} /> */}
 
