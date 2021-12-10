@@ -113,8 +113,10 @@ export default function BlogPosts() {
 
   const dlPost = async () => {
     // console.log(postId);
-    setOpenDialog(false);
-    await delPost({variables: {id: postId}});
+    if(!delLoading){
+      setOpenDialog(false);
+      await delPost({variables: {id: postId}});
+    }
   }
   
   function delDialog(id) {
