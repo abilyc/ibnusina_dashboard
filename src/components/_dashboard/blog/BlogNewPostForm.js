@@ -117,7 +117,7 @@ export default function BlogNewPostForm(props) {
         published: (values.publish ? 2 : 1),
       };
       try {
-        if(props){
+        if(window.location.pathname === '/edit'){
           await updatePost({variables: {id: props.data.id, ...val}});
         }else{
           await createPost({variables: val});
