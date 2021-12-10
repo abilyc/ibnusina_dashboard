@@ -4,12 +4,15 @@ import plusFill from '@iconify/icons-eva/plus-fill';
 import closeFill from '@iconify/icons-eva/close-fill';
 import { Link as RouterLink } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { DialogAnimate } from '../components/animate';
+import checkMark from '@iconify/icons-eva/checkmark-circle-2-fill';
+import closeCircle from '@iconify/icons-eva/close-circle-fill';
 // import { useEffect, useCallback, useState } from 'react';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { deletePost, getPosts } from '../db';
 // material
-import { Box, Grid, Button, Skeleton, Container, Stack } from '@mui/material';
+import { Box, Grid, Button, Skeleton, Container, Stack, Typography, DialogActions, DialogTitle } from '@mui/material';
 // redux
 // import { useDispatch, useSelector } from '../../redux/store';
 // import { getPostsInitial, getMorePosts } from '../../redux/slices/blog';
@@ -33,7 +36,13 @@ const SORT_OPTIONS = [
 ];
 
 
-
+const IconBundle = ({onClick, icon, color, ...other}) => {
+  return (
+      <MIconButton onClick={onClick} {...other}>
+          <Icon icon={icon} color={color} />
+      </MIconButton>
+  )
+}
 // ----------------------------------------------------------------------
 
 const applySort = (posts, sortBy) => {
@@ -72,11 +81,15 @@ export default function BlogPosts() {
   const [nextpost, setNext] = useState('');
   const [firstQuery, setFirst] = useState(true);
   const [hasMore, setHasMore] = useState(true);
+  const [dialogOpen, setOpenDialog] = useState(false);
+  const [postId, setPostId] = useState('');
+
+
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   
   const [GetPost, {data, loading}] = useLazyQuery(getPosts)
-  const [delPost, {data: delData}] = useMutation(deletePost);
+  const [delPost, {data: delData, loading: delLoading}] = useMutation(deletePost);
 
 
   if(loading && firstQuery) setFirst(false);
@@ -98,13 +111,27 @@ export default function BlogPosts() {
   
   const sortedPosts = applySort(posts, filters);
 
-  async function dlPost(id) {
-    await delPost({variables: {id: id}});
+  const dlPost = async () => {
+    // console.log(postId);
+    setOpenDialog(false);
+    await delPost({variables: {id: postId}});
   }
+  
+  function delDialog(id) {
+    if(!delLoading){
+      setPostId(id);
+      setOpenDialog(true);
+    }else{
+      enqueueSnackbar('Sedang dihapus',{
+        variant: 'warning'
+      })
+    }
+  }
+
 
   useEffect(()=>{
     if(delData){
-      setPosts(arr => arr.filter(v => v.id !== delData.deletePost));
+      setPosts(arr => arr.filter(v => v.id !== postId));
       enqueueSnackbar('Delete Berhasil', {
         variant: 'success',
         action: (key) => (
@@ -157,12 +184,34 @@ export default function BlogPosts() {
           <Grid container spacing={3}>
               {
                 sortedPosts.map((post, index) => (
-                  <BlogPostCard key={post.id} post={post} index={index} del={dlPost} />
+                  <BlogPostCard key={post.id} post={post} index={index} del={delDialog} />
                 ))
               }
           </Grid>
         </InfiniteScroll>
       </Container>
+      <DialogAnimate open={dialogOpen} onClose={()=>setOpenDialog(false)}>
+        <DialogTitle>Hapus Posting?</DialogTitle>
+        <DialogActions sx={{ py: 2, px: 3 }}>
+          {/* <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
+            Delete Post
+          </Typography> */}
+          <IconBundle onClick={dlPost} icon={checkMark} color='#06b106'/>
+          <IconBundle onClick={()=>setOpenDialog(false)} icon={closeCircle} color='#ff2121'/>
+          {/* <MIconButton size='small' onClick={()=>setOpenDialog(false)}><Icon icon={closeFill} /></MIconButton>
+          <MIconButton size='small' onClick={()=>setOpenDialog(false)}><Icon icon={closeFill} /></MIconButton> */}
+          {/* <Button>Cancel</Button> */}
+          {/* <LoadingButton
+            type="submit"
+            variant="contained"
+            disabled={!isValid}
+            loading={isSubmitting}
+            onClick={handleSubmit}
+          >
+            Post
+          </LoadingButton> */}
+        </DialogActions>
+      </DialogAnimate>
     </Page>
   );
 }
