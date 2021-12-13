@@ -1,16 +1,26 @@
 import { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { Card, CardContent, CardHeader, Grid, Skeleton } from "@mui/material";
+import { Card, Box, Grid, Skeleton, Typography } from "@mui/material";
 import { styled } from "@mui/styles";
 import { useLazyQuery } from "@apollo/client";
 import { getTagCat } from "../../../db";
 import { capitalCase } from "capital-case";
+import { MIconButton } from "../../@material-extend";
+import { Icon } from "@iconify/react";
+import deleteFilled from '@iconify/icons-ant-design/delete-filled';
+import editFilled from '@iconify/icons-ant-design/edit-filled';
 
 const CustomCard = styled(Card)({
     // width: '95%',
     padding: '10px 20px',
     position: 'relative',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    '& svg:first-of-type': {
+        marginRight: '10px'
+    },
+    '& svg:hover>path': {
+        fill: '#fda92d'
+    }
 })
 
 ListCatTag.propType = {
@@ -35,7 +45,11 @@ export default function ListCatTag({type}){
                 catTag[('all'+capitalCase(type))]?.map(v=>(
                     <Grid item xs={12} md={3} key={v.id}>
                         <CustomCard>
-                            {v.title}
+                            <Box sx={{display: 'flex', alignItems: 'center'}} >
+                                <Typography fontWeight='bold' sx={{flexGrow: 1}}>{v.title}</Typography>
+                                <Icon fontSize={13} icon={editFilled} color='#5b636a' />
+                                <Icon fontSize={13} icon={deleteFilled} color='#5b636a' />
+                            </Box>
                         </CustomCard>
                     </Grid>
                 ))
@@ -47,10 +61,6 @@ export default function ListCatTag({type}){
             {[...Array(4)].map((_, index) => (
                 <Grid item xs={12} md={3} key={index}>
                   <Skeleton variant="rectangular" width="100%" sx={{ height: 45, borderRadius: 2 }} />
-                  {/* <Box sx={{ display: 'flex', mt: 1.5 }}>
-                    <Skeleton variant="circular" sx={{ width: 40, height: 40 }} />
-                    <Skeleton variant="text" sx={{ mx: 1, flexGrow: 1 }} />
-                  </Box> */}
                 </Grid>
               ))}
         </Grid>
