@@ -11,7 +11,6 @@ import deleteFilled from '@iconify/icons-ant-design/delete-filled';
 import editFilled from '@iconify/icons-ant-design/edit-filled';
 
 const CustomCard = styled(Card)({
-    // width: '95%',
     padding: '10px 20px',
     position: 'relative',
     overflow: 'hidden',
@@ -53,7 +52,6 @@ export default function ListCatTag({type}){
                         </CustomCard>
                     </Grid>
                 ))
-
             }
         </Grid>
     ) : (
