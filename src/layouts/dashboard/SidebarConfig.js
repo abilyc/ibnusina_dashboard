@@ -1,6 +1,6 @@
 // routes
 // import { PATH_DASHBOARD } from '../../routes/paths';
-import { PATH_PAGE } from '../../routes/paths';
+import { PATH_PAGE, PATH_BLOG } from '../../routes/paths';
 // components
 // import Label from '../../components/Label';
 import SvgIconStyle from '../../components/SvgIconStyle';
@@ -40,18 +40,35 @@ const sidebarConfig = [
     ]
   },
   {
-    subheader: 'posting',
+    subheader: 'management',
     items: [
       {
         title: 'blog',
-        path: PATH_PAGE.blog,
-        icon: ICONS.blog
+        icon: ICONS.blog,
+        children: [
+          {
+            title: 'posting',
+            path: PATH_BLOG.posts
+          },
+          {
+            title: 'category & tag',
+            path: PATH_BLOG.ct
+          },
+        ]
       },
       {
-        title: 'category & tag',
-        path: PATH_PAGE.ct,
-        icon: ICONS.banking
-      }
+        title: 'user',
+        // path: PATH_DASHBOARD.user.root,
+        icon: ICONS.user,
+        children: [
+          { title: 'profile', path: '#profile' },
+          { title: 'cards', path: '#cards' },
+          { title: 'list', path: '#list' },
+          { title: 'create', path: '#create' },
+          { title: 'edit', path: '#edit' },
+          { title: 'account', path: '#account' }
+        ]
+      },
     ]
   }
 

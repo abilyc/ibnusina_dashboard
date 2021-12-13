@@ -57,13 +57,13 @@ export default function BlogNewPostForm(props) {
   
   
   
-  const { data } = useQuery(getTagCat);
+  const { data: dataTagCat } = useQuery(getTagCat);
   useEffect(()=>{
-    if(data && Tags !== data?.allTag){
-      setTag(data.allTag);
-      setCategory(data.allCategory)
+    if(dataTagCat && Tags !== dataTagCat?.allTag){
+      setTag(dataTagCat.allTag);
+      setCategory(dataTagCat.allCategory)
     }
-  }, [data, Tags])
+  }, [dataTagCat, Tags])
 
   useEffect(()=>{
     if(errorFullData){
@@ -89,7 +89,7 @@ export default function BlogNewPostForm(props) {
     const NewBlogSchema = Yup.object().shape({
       title: Yup.string().required('Title is required'),
       summary: Yup.string().required('Description is required'),
-      content: Yup.string().min(100).required('Content is required'),
+      content: Yup.string().min(10).required('Content is required'),
       imageUrl: Yup.string().required('Cover is Required')
     });
   

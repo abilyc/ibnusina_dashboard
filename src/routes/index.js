@@ -46,10 +46,11 @@ export default function Router() {
       children: [
         { path: '/', element: <Navigate to="app" replace /> },
         { path: 'app', element: <GeneralApp /> },
-        { path: 'blog', element: <BlogPosts />},
-        { path: 'ct', element: <p>category n tag</p>},
+        { path: 'blog', element: <Navigate to="blog/posts" replace />},
         { path: 'blog/new', element: <BlogNewPost />},
-        { path: 'blog/edit', element: <EditPost />}
+        { path: 'blog/edit', element: <EditPost />},
+        { path: 'blog/posts', element: <BlogPosts />},
+        { path: 'blog/ct', element: <CatTag />}
       ]
     },
     {
@@ -71,3 +72,4 @@ const BlogPosts = Loadable(lazy(() => import('../pages/BlogPosts')));
 const BlogNewPost = Loadable(lazy(() => import('../pages/BlogNewPost')));
 const NotFound = Loadable(lazy(() => import('../pages/Page404')));
 const EditPost = Loadable(lazy(() => import('../pages/BlogEditPost')));
+const CatTag = Loadable(lazy(() => import('../pages/BlogCategoryTag')));

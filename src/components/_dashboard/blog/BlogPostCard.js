@@ -202,9 +202,9 @@ export default function BlogPostCard({ post, index, del}) {
             sx={{
               ...((latestPostLarge || latestPost) && 
                   {
-                    filter: 'invert(1) grayscale(1) contrast(9) drop-shadow(.05em .05em white)',
+                    // filter: 'invert(1) grayscale(1) contrast(9) drop-shadow(.05em .05em white)',
                     textShadow: '0 0 3px rgba(0,0,0,0.6)',
-                    typography: 'h5', 
+                    typography: 'h6', 
                     height: 60
                   })
             }}

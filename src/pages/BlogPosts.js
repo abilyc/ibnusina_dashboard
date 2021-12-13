@@ -13,12 +13,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { deletePost, getPosts } from '../db';
 // material
 import { Box, Grid, Button, Skeleton, Container, Stack, Typography, DialogActions, DialogTitle } from '@mui/material';
-// redux
-// import { useDispatch, useSelector } from '../../redux/store';
-// import { getPostsInitial, getMorePosts } from '../../redux/slices/blog';
-// hooks
-// import useSettings from '../../hooks/useSettings';
-// routes
+
 import { PATH_BLOG, PATH_PAGE } from '../routes/paths';
 // components
 import Page from '../components/Page';
@@ -26,6 +21,7 @@ import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
 import { BlogPostCard, BlogPostsSort } from '../components/_dashboard/blog';
 import { MIconButton } from '../components/@material-extend';
 import { useSnackbar } from 'notistack';
+import LoadingDot from '../components/animate/LoadingDot';
 
 // ----------------------------------------------------------------------
 
@@ -88,7 +84,7 @@ export default function BlogPosts() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
   
-  const [GetPost, {data, loading}] = useLazyQuery(getPosts)
+  const [GetPost, {data, loading}] = useLazyQuery(getPosts);
   const [delPost, {data: delData, loading: delLoading}] = useMutation(deletePost);
 
 
@@ -114,8 +110,14 @@ export default function BlogPosts() {
   const dlPost = async () => {
     // console.log(postId);
     if(!delLoading){
-      setOpenDialog(false);
-      await delPost({variables: {id: postId}});
+      const id = postId;
+        await delPost({variables: {id: id}, update: (cache, {data:{ postResult }})=>{
+          console.log(data);
+          // cache.modify({
+          //   id: cache.identify({__typename: 'Posts', id: id})
+          // })
+        }
+      });
     }
   }
   
@@ -134,6 +136,7 @@ export default function BlogPosts() {
   useEffect(()=>{
     if(delData){
       setPosts(arr => arr.filter(v => v.id !== postId));
+      setOpenDialog(false);
       enqueueSnackbar('Delete Berhasil', {
         variant: 'success',
         action: (key) => (
@@ -171,7 +174,6 @@ export default function BlogPosts() {
         />
 
         <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
-          {/* <BlogPostsSearch /> */}
           <BlogPostsSort query={filters} options={SORT_OPTIONS} onSort={handleChangeSort} />
         </Stack>
 
@@ -181,7 +183,6 @@ export default function BlogPosts() {
           loader={SkeletonLoad}
           dataLength={posts?.length}
           style={{ overflow: 'inherit' }}
-          // height='100vh'
         >
           <Grid container spacing={3}>
               {
@@ -192,26 +193,18 @@ export default function BlogPosts() {
           </Grid>
         </InfiniteScroll>
       </Container>
-      <DialogAnimate open={dialogOpen} onClose={()=>setOpenDialog(false)}>
-        <DialogTitle>Hapus Posting?</DialogTitle>
+      <DialogAnimate open={dialogOpen}>
+        <DialogTitle>{!delLoading ? 'Hapus Posting?' : 'Sedang Menghapus' }</DialogTitle>
         <DialogActions sx={{ py: 2, px: 3 }}>
-          {/* <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-            Delete Post
-          </Typography> */}
-          <IconBundle onClick={dlPost} icon={checkMark} color='#06b106'/>
-          <IconBundle onClick={()=>setOpenDialog(false)} icon={closeCircle} color='#ff2121'/>
-          {/* <MIconButton size='small' onClick={()=>setOpenDialog(false)}><Icon icon={closeFill} /></MIconButton>
-          <MIconButton size='small' onClick={()=>setOpenDialog(false)}><Icon icon={closeFill} /></MIconButton> */}
-          {/* <Button>Cancel</Button> */}
-          {/* <LoadingButton
-            type="submit"
-            variant="contained"
-            disabled={!isValid}
-            loading={isSubmitting}
-            onClick={handleSubmit}
-          >
-            Post
-          </LoadingButton> */}
+          
+          {
+            !delLoading ? 
+            <>
+              <IconBundle onClick={dlPost} icon={checkMark} color='#06b106'/>
+              <IconBundle onClick={()=>setOpenDialog(false)} icon={closeCircle} color='#ff2121'/>
+            </> :
+            <LoadingDot/>
+          }
         </DialogActions>
       </DialogAnimate>
     </Page>
