@@ -47,9 +47,9 @@ export default function Router() {
         { path: '/', element: <Navigate to="app" replace /> },
         { path: 'app', element: <GeneralApp /> },
         { path: 'blog', element: <Navigate to="blog/posts" replace />},
+        { path: 'blog/posts', element: <BlogPosts />},
         { path: 'blog/new', element: <BlogNewPost />},
         { path: 'blog/edit', element: <EditPost />},
-        { path: 'blog/posts', element: <BlogPosts />},
         { path: 'blog/ct', element: <CatTag />}
       ]
     },

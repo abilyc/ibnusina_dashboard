@@ -1,16 +1,32 @@
 // material
-import { Container } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Container, Stack } from '@mui/material';
 // routes
 import { PATH_BLOG, PATH_PAGE } from '../routes/paths';
 import Page from '../components/Page';
 import HeaderBreadcrumbs from '../components/HeaderBreadcrumbs';
-import { useLocation } from 'react-router-dom';
-import { capitalCase } from 'capital-case';
+// import { useLocation } from 'react-router-dom';
+// import { capitalCase } from 'capital-case';
+import { BlogPostsSort } from '../components/_dashboard/blog';
+import ListCatTag from '../components/_dashboard/blog/BlogListCatTag';
+
 
 // ----------------------------------------------------------------------
+const SORT_OPTIONS = [
+  {label: 'Category', value: 'category'},
+  {label: 'Tag', value: 'tag'}
+]
 
 export default function BlogCatTag() {
   const themeStretch = true;
+  const [filters, setFilters] = useState('category');
+
+  const handleChangeSort = (e) => setFilters(e.target.value);
+  
+
+  // useEffect(()=>{
+  //   console.log(filters);
+  // },[filters])
 
   return (
     <Page title={`Category & Tag | IBNU SINA`}>
@@ -24,8 +40,11 @@ export default function BlogCatTag() {
           ]}
         />
 
-        {/* {type === 'Full' ? <BlogNewPostForm data={data} /> :
-        <EditForm data={data} />} */}
+        <Stack mb={5} direction="row" alignItems="center" justifyContent="space-between">
+          <BlogPostsSort query={filters} options={SORT_OPTIONS} onSort={handleChangeSort} />
+        </Stack>
+
+        <ListCatTag type={filters}/>
       </Container>
     </Page>
   );
