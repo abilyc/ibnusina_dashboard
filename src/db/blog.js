@@ -1,4 +1,5 @@
 import {gql} from '@apollo/client';
+import { capitalCase } from 'capital-case';
 
 export const getPosts = gql`query loadPosts($limit: Int!, $next: String!){
   loadPosts(limit: $limit, timeStamp:$next){
@@ -65,5 +66,20 @@ export const fullUpdatePost = gql`mutation updatePost($id: ID!, $title: String!,
 
 export const deletePost = gql`mutation deletePost($id: ID!){
   deletePost(postId: $id)
+}
+`
+
+export const deleteTag = gql`mutation deleteTag($id: ID!){
+  deleteTag(id: $id)
+}
+`
+
+export const deleteCategory = gql`mutation deleteCategory($id: ID!){
+  deleteCategory(id: $id)
+}
+`
+
+export const addCatTag = type => gql`mutation add${capitalCase(type)}($title: String){
+  add${capitalCase(type)}(title: $title)
 }
 `
