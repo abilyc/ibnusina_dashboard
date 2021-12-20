@@ -83,3 +83,8 @@ export const addCatTag = type => gql`mutation add${capitalCase(type)}($title: St
   add${capitalCase(type)}(title: $title)
 }
 `
+
+export const editCatTag = type => gql`mutation update${capitalCase(type)}($id: ID!, $title: String!){
+  update${capitalCase(type)}(id: $id, newTitle: $title)
+}
+`

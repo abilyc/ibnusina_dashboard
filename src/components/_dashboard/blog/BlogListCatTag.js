@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
-import { Card, Box, Grid, Skeleton, Typography, DialogTitle, DialogActions, DialogContent } from "@mui/material";
+import { Card, Box, Grid, Skeleton, Typography, DialogTitle, DialogActions, DialogContent, TextField } from "@mui/material";
 import { styled } from "@mui/styles";
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { deleteCategory, deleteTag, getTagCat } from "../../../db";
+import { deleteCategory, deleteTag, editCatTag, getTagCat } from "../../../db";
 import { capitalCase } from "capital-case";
 import { MIconButton } from "../../@material-extend";
 import { Icon } from "@iconify/react";
@@ -40,8 +40,10 @@ ListCatTag.propType = {
 }
 
 export default function ListCatTag({type}){
-    const [getCatTag, {data, loading, refetch, networkStatus}] = useLazyQuery(getTagCat, {notifyOnNetworkStatusChange: true});
+    const [getCatTag, {data, loading}] = useLazyQuery(getTagCat, {notifyOnNetworkStatusChange: true});
     const [del, {data: dataDel, loading: loadingDel, error: errorDel}] = useMutation(type !== 'tag' ? deleteCategory : deleteTag);
+    const [edit, {data: dataEdit, loading: loadingEdit, error: errorEdit}] = useMutation(editCatTag(type));
+    const [newTitle, setNewTitle] = useState('');
     const [catTag, setCatTag] = useState({});
     const [dialog, setDialog] = useState({
         title: '',
@@ -80,6 +82,7 @@ export default function ListCatTag({type}){
                 break;
             case 'save':
                 if(dialog.msg.action === 'delete') del({variables: {id: dialog.msg.id}});
+                if(dialog.msg.action === 'edit') edit({variables: {id: dialog.msg.id, title: newTitle}});
                 break;
             case 'delete':
                 setDialog({
@@ -92,9 +95,10 @@ export default function ListCatTag({type}){
                 setDialog({
                     ...template,
                     title: type,
-                    msg: {id: data.id, title: data.title},
+                    msg: {id: data.id, title: data.title, action: data.action},
                     open: true
                 })
+                setNewTitle(data.title);
                 break;
         }
     };
@@ -105,16 +109,17 @@ export default function ListCatTag({type}){
             showButton: false,
             msg: {
                 title: 'Mohon tunggu',
-                id: prev?.msg?.id
+                id: prev?.msg?.id,
+                action: prev?.msg?.action 
             },
         }));
-    },[loadingDel])
+    },[loadingDel, loadingEdit])
 
     useEffect(()=>{
-        if(dataDel){
+        if(dataDel || dataEdit){
             const modified = `all${capitalCase(type)}`;
             
-            enqueueSnackbar('Delete Berhasil', {
+            enqueueSnackbar(`${capitalCase(type)} Berhasil`, {
                 variant: 'success',
                 action: (key) => (
                   <MIconButton size="small" onClick={() => closeSnackbar(key)}>
@@ -126,17 +131,24 @@ export default function ListCatTag({type}){
                 ...prev,
                 open: false
             }));
-            setCatTag(prev => ({
-                ...prev,
-                [`${modified}`]: prev[modified].filter(v=>v.id!==dialog.msg.id)
-            }));
+            if(dialog.msg.action === 'delete'){
+                setCatTag(prev => ({
+                    ...prev,
+                    [`${modified}`]: prev[modified].filter(v=>v.id!==dialog.msg.id)
+                }));
+            }else{
+                setCatTag(prev => ({
+                    ...prev,
+                    [`${modified}`]: prev[modified].map(v=>({...v, title: v.id===dialog.msg.id ? newTitle : v.title}))
+                }))
+            }
         }
-    },[dataDel]);
+    },[dataDel, dataEdit]);
 
     return !loading ? (
         <Grid container spacing={2}>
             {
-                catTag[('all'+capitalCase(type))]?.map(v=>(
+                catTag[`all${capitalCase(type)}`]?.map(v=>(
                     <Grid item xs={12} md={3} key={v.id}>
                         <CustomCard>
                             <Box sx={{display: 'flex', alignItems: 'center'}} >
@@ -150,17 +162,25 @@ export default function ListCatTag({type}){
             }
             <DialogAnimate open={dialog.open}>
                 <DialogTitle>
-                    {capitalCase(`${dialog.title} ${type}`)}
+                    {capitalCase(`${dialog?.title} ${type}`)}
                 </DialogTitle>
-                {
-                    dialog.msg && (
-                        <DialogContent>
+                    <DialogContent sx={{paddingTop: '30px !important'}}>
+                        {
+                            dialog?.msg?.action === 'edit' ?
+                            <TextField
+                                fullWidth
+                                minRows={3}
+                                maxRows={5}
+                                label="Title"
+                                onChange={(e)=>setNewTitle(e.target.value)}
+                                value={newTitle}
+                            /> :
                             <Box sx={{display: 'flex', alignItems: 'center'}}>
                                 {dialog?.msg?.title}
                             </Box>
+                            
+                        }
                         </DialogContent>
-                    ) 
-                }
                 <DialogActions>
                     {
                         dialog.showButton && ( 

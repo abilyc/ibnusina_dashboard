@@ -3,6 +3,7 @@ import { Quill } from 'react-quill';
 import { Icon } from '@iconify/react';
 import roundUndo from '@iconify/icons-ic/round-undo';
 import roundRedo from '@iconify/icons-ic/round-redo';
+import embedImg from '@iconify/icons-ic/baseline-add-photo-alternate';
 
 import QuillEditorToolbarStyle from './QuillEditorToolbarStyle';
 // //
@@ -158,6 +159,9 @@ export default function QuillEditorToolbar({ id, isSimple, ...other }) {
           <button type="button" className="ql-link" />
           <button type="button" className="ql-image" />
           <button type="button" className="ql-video" />
+          <button type="button" className="ql-embedimg">
+            <Icon icon={embedImg} width={18} height={18} />
+          </button>
         </div>
 
         <div className="ql-formats">

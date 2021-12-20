@@ -46,6 +46,11 @@ export default function QuillEditor({ id, error, value, onChange, simple = false
     toolbar: {
       container: `#${id}`,
       handlers: {
+        embedimg: v => {
+          if(v){
+            let src = prompt('enter url');
+          }
+        },
         undo: undoChange,
         redo: redoChange
       }

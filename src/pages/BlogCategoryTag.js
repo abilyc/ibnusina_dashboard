@@ -124,19 +124,19 @@ export default function BlogCatTag() {
                 <DialogTitle>
                     {capitalCase(`${filters} baru`)}
                 </DialogTitle>
-                  <DialogContent sx={{paddingTop: '30px !important'}}>
-                    {
-                      loading ? 'Mohon Tunggu' :
-                      <TextField
-                        fullWidth
-                        minRows={3}
-                        maxRows={5}
-                        label="Title"
-                        onChange={(e)=>setNewTitle(e.target.value)}
-                        value={newTitle}
-                      />
-                    }
-                  </DialogContent>
+                <DialogContent sx={{paddingTop: '30px !important'}}>
+                  {
+                    loading ? 'Mohon Tunggu' :
+                    <TextField
+                      fullWidth
+                      minRows={3}
+                      maxRows={5}
+                      label="Title"
+                      onChange={(e)=>setNewTitle(e.target.value)}
+                      value={newTitle}
+                    />
+                  }
+                </DialogContent>
                 <DialogActions>
                     {
                         dialog.showButton && ( 
