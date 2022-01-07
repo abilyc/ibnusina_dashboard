@@ -21,7 +21,7 @@ export default function BlogNewPost() {
           heading="Buat Posting"
           links={[
             { name: 'Dashboard', href: PATH_PAGE.root },
-            { name: 'Blog', href: PATH_BLOG.root },
+            { name: 'Blog', href: PATH_BLOG.posts },
             { name: 'New Post' }
           ]}
         />

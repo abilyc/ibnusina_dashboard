@@ -101,7 +101,7 @@ export default function BlogCatTag() {
           heading='Category & Tag'
           links={[
             { name: 'Dashboard', href: PATH_PAGE.root },
-            { name: 'Blog', href: PATH_BLOG.root },
+            { name: 'Blog', href: PATH_BLOG.posts },
             { name: 'Category & Tag' }
           ]}
           action={

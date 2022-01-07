@@ -25,7 +25,7 @@ export default function BlogEditPost() {
           heading={`Edit ${type}`}
           links={[
             { name: 'Dashboard', href: PATH_PAGE.root },
-            { name: 'Blog', href: PATH_BLOG.root },
+            { name: 'Blog', href: PATH_BLOG.posts },
             { name: 'Edit' }
           ]}
         />
